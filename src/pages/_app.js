@@ -9,6 +9,8 @@ import { AuthConsumer, AuthProvider } from '../contexts/auth-context';
 import { createEmotionCache } from '../utils/create-emotion-cache';
 import { registerChartJs } from '../utils/register-chart-js';
 import { theme } from '../theme';
+import { AlertProvider } from '../contexts/alert';
+import CustomAlert from '../components/alert';
 
 registerChartJs();
 
@@ -23,7 +25,7 @@ const App = (props) => {
     <CacheProvider value={emotionCache}>
       <Head>
         <title>
-          Material Kit Pro
+          Legal Web
         </title>
         <meta
           name="viewport"
@@ -33,15 +35,18 @@ const App = (props) => {
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <AuthProvider>
-            <AuthConsumer>
-              {
-                (auth) => auth.isLoading
-                  ? <Fragment />
-                  : getLayout(<Component {...pageProps} />)
-              }
-            </AuthConsumer>
-          </AuthProvider>
+          <AlertProvider>
+            <CustomAlert />
+            <AuthProvider>
+              <AuthConsumer>
+                {
+                  (auth) => auth.isLoading
+                    ? <Fragment />
+                    : getLayout(<Component {...pageProps} />)
+                }
+              </AuthConsumer>
+            </AuthProvider>
+          </AlertProvider>
         </ThemeProvider>
       </LocalizationProvider>
     </CacheProvider>
