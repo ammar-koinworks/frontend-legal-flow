@@ -3,16 +3,22 @@ import NextLink from 'next/link';
 import Router from 'next/router';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { Box, Button, Container, Grid, Link, TextField, Typography } from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { Facebook as FacebookIcon } from '../icons/facebook';
-import { Google as GoogleIcon } from '../icons/google';
+import { Box, Button, Container, Link, TextField, Typography } from '@mui/material';
+
+// data & helpers
+import { useAuthContext } from '../contexts/auth-context';
+import { useAlertContext } from '../contexts/alert';
+import { login } from '../api/auth';
+import { GuestGuard } from '../components/guest-guard';
 
 const Login = () => {
+  const authContext = useAuthContext();
+  const alertContext = useAlertContext();
+
   const formik = useFormik({
     initialValues: {
-      email: 'demo@devias.io',
-      password: 'Password123'
+      email: '',
+      password: ''
     },
     validationSchema: Yup.object({
       email: Yup
@@ -25,17 +31,33 @@ const Login = () => {
         .max(255)
         .required('Password is required')
     }),
-    onSubmit: () => {
-      Router
-        .push('/')
-        .catch(console.error);
+    onSubmit: async (data) => {
+      try {
+        // Get the user from your database
+        const res = await login(data);
+
+        if (res.success) {
+          globalThis.sessionStorage.setItem('token', res.token);
+
+          // Update Auth Context state
+          authContext.signIn(res.data);
+
+          Router
+            .push('/')
+            .catch(console.error);
+        } else {
+          alertContext.setAlert("error", res.message);
+        }
+      } catch (err) {
+        alertContext.setAlert("error", err.message);
+      }
     }
   });
 
   return (
-    <>
+    <GuestGuard>
       <Head>
-        <title>Login | Material Kit</title>
+        <title>Login | Legal Web</title>
       </Head>
       <Box
         component="main"
@@ -47,19 +69,8 @@ const Login = () => {
         }}
       >
         <Container maxWidth="sm">
-          <NextLink
-            href="/"
-            passHref
-          >
-            <Button
-              component="a"
-              startIcon={<ArrowBackIcon fontSize="small" />}
-            >
-              Dashboard
-            </Button>
-          </NextLink>
           <form onSubmit={formik.handleSubmit}>
-            <Box sx={{ my: 3 }}>
+            <Box sx={{ my: 1 }}>
               <Typography
                 color="textPrimary"
                 variant="h4"
@@ -71,58 +82,7 @@ const Login = () => {
                 gutterBottom
                 variant="body2"
               >
-                Sign in on the internal platform
-              </Typography>
-            </Box>
-            <Grid
-              container
-              spacing={3}
-            >
-              <Grid
-                item
-                xs={12}
-                md={6}
-              >
-                <Button
-                  color="info"
-                  fullWidth
-                  startIcon={<FacebookIcon />}
-                  onClick={() => formik.handleSubmit()}
-                  size="large"
-                  variant="contained"
-                >
-                  Login with Facebook
-                </Button>
-              </Grid>
-              <Grid
-                item
-                xs={12}
-                md={6}
-              >
-                <Button
-                  color="error"
-                  fullWidth
-                  onClick={() => formik.handleSubmit()}
-                  size="large"
-                  startIcon={<GoogleIcon />}
-                  variant="contained"
-                >
-                  Login with Google
-                </Button>
-              </Grid>
-            </Grid>
-            <Box
-              sx={{
-                pb: 1,
-                pt: 3
-              }}
-            >
-              <Typography
-                align="center"
-                color="textSecondary"
-                variant="body1"
-              >
-                or login with email address
+                Sign in on the legal web internal platform
               </Typography>
             </Box>
             <TextField
@@ -187,7 +147,7 @@ const Login = () => {
           </form>
         </Container>
       </Box>
-    </>
+    </GuestGuard>
   );
 };
 

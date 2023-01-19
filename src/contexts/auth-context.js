@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useReducer, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { auth, ENABLE_AUTH } from '../lib/auth';
+import { getUser } from '../api/auth';
 
 const HANDLERS = {
   INITIALIZE: 'INITIALIZE',
@@ -73,51 +73,26 @@ export const AuthProvider = (props) => {
 
     initialized.current = true;
 
-    // Check if auth has been skipped
-    // From sign-in page we may have set "skip-auth" to "true"
-    const authSkipped = globalThis.sessionStorage.getItem('skip-auth') === 'true';
-
-    if (authSkipped) {
-      const user = {};
-
-      dispatch({
-        type: HANDLERS.INITIALIZE,
-        payload: user
-      });
-      return;
-    }
-
-    // Check if authentication with Zalter is enabled
-    // If not, then set user as authenticated
-    if (!ENABLE_AUTH) {
-      const user = {};
-
-      dispatch({
-        type: HANDLERS.INITIALIZE,
-        payload: user
-      });
-      return;
-    }
-
     try {
-      // Check if user is authenticated
-      const isAuthenticated = await auth.isAuthenticated();
+      // Check if user is authenticated by Get the user with token
+      const token = globalThis.sessionStorage.getItem('token');
 
-      if (isAuthenticated) {
-        // Get user from your database
-        const user = {};
+      if (token) {
+        const res = await getUser();
 
-        dispatch({
-          type: HANDLERS.INITIALIZE,
-          payload: user
-        });
-      } else {
-        dispatch({
-          type: HANDLERS.INITIALIZE
-        });
+        if (res.success) {
+          dispatch({
+            type: HANDLERS.INITIALIZE,
+            payload: res.data
+          });
+        }
       }
+
+      dispatch({
+        type: HANDLERS.INITIALIZE
+      });
+
     } catch (err) {
-      console.error(err);
       dispatch({
         type: HANDLERS.INITIALIZE
       });
@@ -136,6 +111,7 @@ export const AuthProvider = (props) => {
   };
 
   const signOut = () => {
+    globalThis.sessionStorage.removeItem('token');
     dispatch({
       type: HANDLERS.SIGN_OUT
     });

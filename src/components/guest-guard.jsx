@@ -2,13 +2,15 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import { useAuthContext } from '../contexts/auth-context';
+import { useAlertContext } from '../contexts/alert';
 
-export const AuthGuard = (props) => {
+export const GuestGuard = (props) => {
   const { children } = props;
   const router = useRouter();
   const { isAuthenticated } = useAuthContext();
   const ignore = useRef(false);
   const [checked, setChecked] = useState(false);
+  const alertContext = useAlertContext();
 
   // Only do authentication check on component mount.
   // This flow allows you to manually redirect the user after sign-out, otherwise this will be
@@ -27,12 +29,11 @@ export const AuthGuard = (props) => {
 
       ignore.current = true;
 
-      if (!isAuthenticated) {
-        console.log('Not authenticated, redirecting');
+      if (isAuthenticated) {
+        alertContext.setAlert("warning", "You are authenticated, please sign out first");
         router
           .replace({
-            pathname: '/login',
-            query: router.asPath !== '/' ? { continueUrl: router.asPath } : undefined
+            pathname: '/'
           })
           .catch(console.error);
       } else {
@@ -52,6 +53,6 @@ export const AuthGuard = (props) => {
   return children;
 };
 
-AuthGuard.propTypes = {
+GuestGuard.propTypes = {
   children: PropTypes.node
 };
