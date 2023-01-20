@@ -6,31 +6,40 @@ import * as Yup from 'yup';
 import {
   Box,
   Button,
-  Checkbox,
   Container,
-  FormHelperText,
   Link,
   TextField,
   Typography
 } from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+
+// components
+import { GuestGuard } from '../components/guest-guard';
+import SelectAsync from '../components/select-async';
+
+// data & helpers
+import { getDatas } from '../api/masterData';
+import { register } from '../api/auth';
+import { useAlertContext } from '../contexts/alert';
 
 const Register = () => {
+  const alertContext = useAlertContext();
+
   const formik = useFormik({
     initialValues: {
       email: '',
       firstName: '',
       lastName: '',
       password: '',
-      policy: false
+      userName: '',
+      position: null,
+      department: null,
     },
     validationSchema: Yup.object({
       email: Yup
         .string()
         .email('Must be a valid email')
         .max(255)
-        .required(
-          'Email is required'),
+        .required('Email is required'),
       firstName: Yup
         .string()
         .max(255)
@@ -43,25 +52,49 @@ const Register = () => {
         .string()
         .max(255)
         .required('Password is required'),
-      policy: Yup
-        .boolean()
-        .oneOf(
-          [true],
-          'This field must be checked'
-        )
+      userName: Yup
+        .string()
+        .max(255)
+        .required('User name is required'),
+      position: Yup
+        .number().typeError('Position is Required')
+        .required('Position is required'),
+      department: Yup
+        .number().typeError('Department is Required')
+        .required('Department is required'),
     }),
-    onSubmit: () => {
-      Router
-        .push('/')
-        .catch(console.error);
+    onSubmit: async (data) => {
+      try {
+        const res = await register({
+          email: data.email,
+          password: data.password,
+          firstname: data.firstName,
+          lastname: data.lastName,
+          username: data.userName,
+          role_id: data.position,
+          department_id: data.department,
+        });
+
+        formik.setSubmitting(false);
+
+        if (res.success) {
+          Router
+            .push('/')
+            .catch(console.error);
+        } else {
+          alertContext.setAlert("error", res.message);
+        }
+      } catch (err) {
+        alertContext.setAlert("error", err.message);
+      }
     }
   });
 
   return (
-    <>
+    <GuestGuard>
       <Head>
         <title>
-          Register | Material Kit
+          Register | Legal Web
         </title>
       </Head>
       <Box
@@ -74,17 +107,6 @@ const Register = () => {
         }}
       >
         <Container maxWidth="sm">
-          <NextLink
-            href="/"
-            passHref
-          >
-            <Button
-              component="a"
-              startIcon={<ArrowBackIcon fontSize="small" />}
-            >
-              Dashboard
-            </Button>
-          </NextLink>
           <form onSubmit={formik.handleSubmit}>
             <Box sx={{ my: 3 }}>
               <Typography
@@ -139,6 +161,18 @@ const Register = () => {
               variant="outlined"
             />
             <TextField
+              error={Boolean(formik.touched.userName && formik.errors.userName)}
+              fullWidth
+              helperText={formik.touched.userName && formik.errors.userName}
+              label="User Name"
+              margin="normal"
+              name="userName"
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              value={formik.values.userName}
+              variant="outlined"
+            />
+            <TextField
               error={Boolean(formik.touched.password && formik.errors.password)}
               fullWidth
               helperText={formik.touched.password && formik.errors.password}
@@ -151,43 +185,8 @@ const Register = () => {
               value={formik.values.password}
               variant="outlined"
             />
-            <Box
-              sx={{
-                alignItems: 'center',
-                display: 'flex',
-                ml: -1
-              }}
-            >
-              <Checkbox
-                checked={formik.values.policy}
-                name="policy"
-                onChange={formik.handleChange}
-              />
-              <Typography
-                color="textSecondary"
-                variant="body2"
-              >
-                I have read the
-                {' '}
-                <NextLink
-                  href="#"
-                  passHref
-                >
-                  <Link
-                    color="primary"
-                    underline="always"
-                    variant="subtitle2"
-                  >
-                    Terms and Conditions
-                  </Link>
-                </NextLink>
-              </Typography>
-            </Box>
-            {Boolean(formik.touched.policy && formik.errors.policy) && (
-              <FormHelperText error>
-                {formik.errors.policy}
-              </FormHelperText>
-            )}
+            <SelectAsync name='Position' formik={formik} data={(search) => getDatas('position', { for_member: true, search })} />
+            <SelectAsync name='Department' formik={formik} data={(search) => getDatas('department', { for_member: true, search })} />
             <Box sx={{ py: 2 }}>
               <Button
                 color="primary"
@@ -221,7 +220,7 @@ const Register = () => {
           </form>
         </Container>
       </Box>
-    </>
+    </GuestGuard>
   );
 };
 

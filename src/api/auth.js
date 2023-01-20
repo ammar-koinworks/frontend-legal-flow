@@ -22,3 +22,15 @@ export const getUser = async () => {
 
   return await response.json();
 }
+
+export const register = async (data) => {
+  const response = await fetch(`${BASE_URL}/auth/register`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+
+  return await response.json();
+}
