@@ -34,3 +34,27 @@ export const register = async (data) => {
 
   return await response.json();
 }
+
+export const forgotPassword = async (data) => {
+  const response = await fetch(`${ADMIN_URL}/admin/request-otp`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+
+  return await response.json();
+}
+
+export const newPassword = async (data) => {
+  const response = await fetch(`${ADMIN_URL}/admin/new-password`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+
+  return await response.json();
+}

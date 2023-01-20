@@ -3,7 +3,7 @@ import NextLink from 'next/link';
 import Router from 'next/router';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { Box, Button, Container, Link, TextField, Typography } from '@mui/material';
+import { Box, Button, Container, Grid, Link, TextField, Typography } from '@mui/material';
 
 // data & helpers
 import { useAuthContext } from '../contexts/auth-context';
@@ -123,27 +123,54 @@ const Login = () => {
                 Sign In Now
               </Button>
             </Box>
-            <Typography
-              color="textSecondary"
-              variant="body2"
-            >
-              Don&apos;t have an account?
-              {' '}
-              <NextLink
-                href="/register"
-              >
-                <Link
-                  to="/register"
-                  variant="subtitle2"
-                  underline="hover"
-                  sx={{
-                    cursor: 'pointer'
-                  }}
-                >
-                  Sign Up
-                </Link>
-              </NextLink>
-            </Typography>
+            <Box sx={{ py: 2 }}>
+              <Grid container spacing={2} >
+                <Grid item xs={6}>
+                  <Typography
+                    color="textSecondary"
+                    variant="body2"
+                  >
+                    Don&apos;t have an account?
+                    {' '}
+                    <NextLink
+                      href="/register"
+                    >
+                      <Link
+                        to="/register"
+                        variant="subtitle2"
+                        underline="hover"
+                        sx={{
+                          cursor: 'pointer'
+                        }}
+                      >
+                        Sign Up
+                      </Link>
+                    </NextLink>
+                  </Typography>
+                </Grid>
+                <Grid item xs={6} textAlign={'right'}>
+                  <Typography
+                    color="textSecondary"
+                    variant="body2"
+                  >
+                    <NextLink
+                      href="/forgot-password"
+                    >
+                      <Link
+                        to="/forgot-password"
+                        variant="subtitle2"
+                        underline="hover"
+                        sx={{
+                          cursor: 'pointer'
+                        }}
+                      >
+                        forgot password?
+                      </Link>
+                    </NextLink>
+                  </Typography>
+                </Grid>
+              </Grid>
+            </Box>
           </form>
         </Container>
       </Box>
