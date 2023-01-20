@@ -71,13 +71,12 @@ const Register = () => {
           firstname: data.firstName,
           lastname: data.lastName,
           username: data.userName,
-          role_id: data.position,
+          position_id: data.position,
           department_id: data.department,
         });
 
-        formik.setSubmitting(false);
-
         if (res.success) {
+          alertContext.setAlert("success", res.message);
           Router
             .push('/')
             .catch(console.error);
