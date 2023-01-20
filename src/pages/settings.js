@@ -8,7 +8,7 @@ const Page = () => (
   <>
     <Head>
       <title>
-        Settings | Material Kit
+        Settings | Legal Web
       </title>
     </Head>
     <Box
@@ -25,8 +25,8 @@ const Page = () => (
         >
           Settings
         </Typography>
-        <SettingsNotifications />
-        <Box sx={{ pt: 3 }}>
+        {/* <SettingsNotifications /> */}
+        <Box>
           <SettingsPassword />
         </Box>
       </Container>

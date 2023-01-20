@@ -3,7 +3,7 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { debounce } from '@mui/material/utils';
 
-export default function SelectAsync({ name, formik, data }) {
+export default function SelectAsync({ name, formik, data, defaultValue = { id: null, name: null } }) {
   const [value, setValue] = React.useState(null);
   const [inputValue, setInputValue] = React.useState('');
   const [options, setOptions] = React.useState([]);
@@ -24,10 +24,17 @@ export default function SelectAsync({ name, formik, data }) {
   );
 
   React.useEffect(() => {
-    if (inputValue !== '') {
+    if (inputValue !== '' && inputValue !== defaultValue.name) {
       fetch(inputValue);
     }
   }, [inputValue]);
+
+  React.useEffect(() => {
+    if (defaultValue.id) {
+      setOptions([defaultValue])
+      setValue(defaultValue)
+    }
+  }, [defaultValue.id]);
 
   return (
     <Autocomplete

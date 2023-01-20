@@ -58,3 +58,29 @@ export const newPassword = async (data) => {
 
   return await response.json();
 }
+
+export const updateProfile = async (id, data) => {
+  const response = await fetch(`${ADMIN_URL}/admin/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': TOKEN,
+    },
+    body: JSON.stringify(data),
+  })
+
+  return await response.json();
+}
+
+export const changePassword = async (data) => {
+  const response = await fetch(`${ADMIN_URL}/admin/change-password`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': TOKEN,
+    },
+    body: JSON.stringify(data),
+  })
+
+  return await response.json();
+}
