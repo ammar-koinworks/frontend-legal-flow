@@ -14,8 +14,10 @@ export default function SelectAsync({ name, formik, data }) {
         const getData = data(search);
 
         getData.then((res) => {
-          setOptions(res?.data);
-          return res?.data;
+          const data = res?.data?.sort((a, b) => (a.name > b.name) ? 1 : -1)
+
+          setOptions(data);
+          return data;
         });
       }, 400)
     , []
