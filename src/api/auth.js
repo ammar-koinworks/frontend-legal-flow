@@ -1,4 +1,4 @@
-import { ADMIN_URL, BASE_URL, TOKEN } from "./config";
+import { ADMIN_URL, BASE_URL, MEMBER_URL, TOKEN } from "./config";
 
 export const login = async (data) => {
   const response = await fetch(`${BASE_URL}/auth/login`, {
@@ -13,7 +13,7 @@ export const login = async (data) => {
 }
 
 export const getUser = async () => {
-  const response = await fetch(`${ADMIN_URL}/admin/get-info`, {
+  const response = await fetch(`${MEMBER_URL}/user/get-info`, {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': TOKEN,

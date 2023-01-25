@@ -1,7 +1,7 @@
-import { ADMIN_URL } from "./config";
+import { MEMBER_URL } from "./config";
 
 export const getDatas = async (data, query) => {
-  const url = `${ADMIN_URL}/${data}?${new URLSearchParams(query)}`;
+  const url = `${MEMBER_URL}/${data}?${new URLSearchParams(query)}`;
 
   const response = await fetch(url, {
     headers: {
