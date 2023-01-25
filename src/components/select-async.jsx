@@ -52,7 +52,7 @@ export default function SelectAsync({ name, formik, data, defaultValue = { id: n
       onChange={(event, newValue) => {
         setValue(newValue);
         setInputValue('');
-        formik.setFieldValue(name.toLowerCase(), newValue ? newValue.id : null);
+        formik.setFieldValue(`${name.toLowerCase()}_id`, newValue ? newValue.id : null);
       }}
       onInputChange={(event, newInputValue) => {
         setInputValue(newInputValue);
@@ -64,9 +64,9 @@ export default function SelectAsync({ name, formik, data, defaultValue = { id: n
           error={Boolean(formik.touched[name.toLowerCase()] && formik.errors[name.toLowerCase()])}
           helperText={formik.touched[name.toLowerCase()] && formik.errors[name.toLowerCase()]}
           margin='normal'
+          onBlur={formik.handleBlur}
         />
       )}
-      onBlur={formik.handleBlur}
     />
   );
 }

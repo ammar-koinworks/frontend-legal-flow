@@ -11,6 +11,7 @@ import { registerChartJs } from '../utils/register-chart-js';
 import { theme } from '../theme';
 import { AlertProvider } from '../contexts/alert';
 import CustomAlert from '../components/alert';
+import { TableProvider } from '../contexts/table-context';
 
 registerChartJs();
 
@@ -38,13 +39,15 @@ const App = (props) => {
           <AlertProvider>
             <CustomAlert />
             <AuthProvider>
-              <AuthConsumer>
-                {
-                  (auth) => auth.isLoading
-                    ? <Fragment />
-                    : getLayout(<Component {...pageProps} />)
-                }
-              </AuthConsumer>
+              <TableProvider>
+                <AuthConsumer>
+                  {
+                    (auth) => auth.isLoading
+                      ? <Fragment />
+                      : getLayout(<Component {...pageProps} />)
+                  }
+                </AuthConsumer>
+              </TableProvider>
             </AuthProvider>
           </AlertProvider>
         </ThemeProvider>

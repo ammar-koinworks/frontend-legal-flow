@@ -15,6 +15,7 @@ import { Users as UsersIcon } from '../icons/users';
 import { XCircle as XCircleIcon } from '../icons/x-circle';
 import { Logo } from './logo';
 import { NavItem } from './nav-item';
+import { FileCopy } from '@mui/icons-material';
 
 const items = [
   {
@@ -23,9 +24,9 @@ const items = [
     title: 'Dashboard'
   },
   {
-    href: '/customers',
-    icon: (<UsersIcon fontSize="small" />),
-    title: 'Customers'
+    href: '/documents',
+    icon: (<FileCopy fontSize="small" />),
+    title: 'Documents'
   },
   // {
   //   href: '/products',
