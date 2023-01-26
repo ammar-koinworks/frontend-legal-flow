@@ -31,13 +31,13 @@ export const AccountProfile = (props) => {
             color="textSecondary"
             variant="body2"
           >
-            Department: {user.department.name}
+            Department: {user?.department?.name}
           </Typography>
           <Typography
             color="textSecondary"
             variant="body2"
           >
-            Position: {user.position.name}
+            Position: {user?.position?.name}
           </Typography>
         </Box>
       </CardContent>
