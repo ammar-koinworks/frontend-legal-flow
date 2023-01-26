@@ -46,7 +46,7 @@ export const DocumentListResults = ({ tableContext }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {datas.map((data) => (
+              {datas.length ? datas.map((data) => (
                 <TableRow
                   hover
                   key={data.id}
@@ -76,7 +76,17 @@ export const DocumentListResults = ({ tableContext }) => {
                     </IconButton>
                   </TableCell>
                 </TableRow>
-              ))}
+              ))
+                :
+                <TableRow>
+                  <TableCell
+                    colSpan={6}
+                    align='center'
+                  >
+                    No data
+                  </TableCell>
+                </TableRow>
+              }
             </TableBody>
           </Table>
         </Box>
