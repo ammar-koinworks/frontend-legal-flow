@@ -1,5 +1,8 @@
 export const roleAccess = {
-  'staff': {
+  'member': {
+    'dashboard': {
+      'read': true,
+    },
     'document': {
       'create': true,
       'read': true,
@@ -9,6 +12,9 @@ export const roleAccess = {
     }
   },
   'admin': {
+    'dashboard': {
+      'read': true,
+    },
     'document': {
       'create': true,
       'read': true,
@@ -18,6 +24,9 @@ export const roleAccess = {
     }
   },
   'superadmin': {
+    'dashboard': {
+      'read': true,
+    },
     'document': {
       'create': true,
       'read': true,

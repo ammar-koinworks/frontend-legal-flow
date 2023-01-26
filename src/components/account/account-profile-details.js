@@ -25,12 +25,12 @@ export const AccountProfileDetails = (props) => {
 
   const formik = useFormik({
     initialValues: {
-      email: user.email,
-      firstName: user.firstname,
-      lastName: user.lastname,
-      userName: user.username,
-      position: user.position_id,
-      department: user.department_id,
+      email: user?.email,
+      firstName: user?.firstname,
+      lastName: user?.lastname,
+      userName: user?.username,
+      position: user?.position_id,
+      department: user?.department_id,
     },
     validationSchema: Yup.object({
       email: Yup
@@ -174,14 +174,14 @@ export const AccountProfileDetails = (props) => {
               md={6}
               xs={12}
             >
-              <SelectAsync name='Position' formik={formik} data={(search) => getDatas('position', { for_member: true, search })} defaultValue={user.position} />
+              <SelectAsync name='Position' formik={formik} data={(search) => getDatas('position', { for_member: true, search })} defaultValue={user?.position} />
             </Grid>
             <Grid
               item
               md={6}
               xs={12}
             >
-              <SelectAsync name='Department' formik={formik} data={(search) => getDatas('department', { for_member: true, search })} defaultValue={user.department} />
+              <SelectAsync name='Department' formik={formik} data={(search) => getDatas('department', { for_member: true, search })} defaultValue={user?.department} />
             </Grid>
           </Grid>
         </CardContent>
