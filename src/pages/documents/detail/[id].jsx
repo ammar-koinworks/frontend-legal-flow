@@ -1,8 +1,8 @@
 import Head from 'next/head';
 import { Box, Container, Typography } from '@mui/material';
-import { DashboardLayout } from '../../components/dashboard-layout';
-import { DocumentFormAdd } from '../../components/document/document-form-add';
-import { RoleGuard } from '../../components/role-guard';
+import { DashboardLayout } from '../../../components/dashboard-layout';
+import { DocumentDetail } from '../../../components/document/document-detail';
+import { RoleGuard } from '../../../components/role-guard';
 
 const Page = () => (
   <>
@@ -25,7 +25,7 @@ const Page = () => (
         >
           Document Form
         </Typography>
-        <DocumentFormAdd />
+        <DocumentDetail />
       </Container>
     </Box>
   </>
@@ -33,7 +33,7 @@ const Page = () => (
 
 Page.getLayout = (page) => (
   <DashboardLayout>
-    <RoleGuard page='document' access='create'>
+    <RoleGuard page='document' access='read'>
       {page}
     </RoleGuard>
   </DashboardLayout>

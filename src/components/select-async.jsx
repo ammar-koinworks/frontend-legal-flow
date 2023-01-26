@@ -3,7 +3,7 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { debounce } from '@mui/material/utils';
 
-export default function SelectAsync({ name, formik, data, defaultValue = { id: null, name: null } }) {
+export default function SelectAsync({ name, formik, data, defaultValue = { id: null, name: null }, disabled = false, sx = {} }) {
   const [value, setValue] = React.useState(null);
   const [inputValue, setInputValue] = React.useState('');
   const [options, setOptions] = React.useState([]);
@@ -57,6 +57,8 @@ export default function SelectAsync({ name, formik, data, defaultValue = { id: n
       onInputChange={(event, newInputValue) => {
         setInputValue(newInputValue);
       }}
+      disabled={disabled}
+      sx={sx}
       renderInput={(params) => (
         <TextField
           {...params}

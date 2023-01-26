@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useReducer, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { getUser } from '../api/auth';
+import { roleAccess } from '../api/roleAccess';
 
 const HANDLERS = {
   INITIALIZE: 'INITIALIZE',
@@ -121,6 +122,7 @@ export const AuthProvider = (props) => {
     <AuthContext.Provider
       value={{
         ...state,
+        roleAccess: roleAccess[state.user?.position?.name.toLowerCase()],
         signIn,
         signOut
       }}

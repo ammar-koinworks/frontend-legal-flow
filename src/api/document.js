@@ -23,3 +23,14 @@ export const documents = async (query) => {
 
   return await response.json();
 }
+
+export const document = async (id) => {
+  const response = await fetch(`${MEMBER_URL}/document-request/${id}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': TOKEN,
+    }
+  })
+
+  return await response.json();
+}

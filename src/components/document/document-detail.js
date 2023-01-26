@@ -10,25 +10,33 @@ import {
 
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import Router from 'next/router';
+import Router, { useRouter } from 'next/router';
 
 import SelectAsync from '../select-async';
 
 import { getDatas } from '../../api/masterData';
 import { useAlertContext } from '../../contexts/alert';
+import { document, documentUpdate } from '../../api/document';
+import { useState } from 'react';
+import { useGetDetail } from '../../hooks/detail';
+import { DocumentDetailButton } from './document-detail-button';
 import { useAuthContext } from '../../contexts/auth-context';
-import { documentStore } from '../../api/document';
 
-export const DocumentFormAdd = (props) => {
-  const { user } = useAuthContext();
+export const DocumentDetail = (props) => {
+  const { roleAccess: { document: { finish } } } = useAuthContext();
+  const { query: { id } } = useRouter();
+  const { detail } = useGetDetail(() => document(id));
   const alertContext = useAlertContext();
+  const [isEdit, setIsEdit] = useState(false);
 
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      requester_name: user.fullname,
-      document_title: '',
-      description: '',
-      company_id: null,
+      requester_name: detail.requester_name || '',
+      document_title: detail.document_title || '',
+      description: detail.Description || '',
+      company_id: detail.company_id || null,
+      document_link: detail.document_link || '',
     },
     validationSchema: Yup.object({
       requester_name: Yup
@@ -49,11 +57,11 @@ export const DocumentFormAdd = (props) => {
     }),
     onSubmit: async (data) => {
       try {
-        const res = await documentStore(data);
+        const res = await documentUpdate(id, data);
 
         if (res.success) {
           alertContext.setAlert("success", res.message);
-          Router.push('/documents');
+          setIsEdit(false);
         } else {
           alertContext.setAlert("error", res.message);
         }
@@ -81,6 +89,7 @@ export const DocumentFormAdd = (props) => {
               xs={12}
             >
               <TextField
+                disabled={!isEdit}
                 error={Boolean(formik.touched.requester_name && formik.errors.requester_name)}
                 fullWidth
                 helperText={formik.touched.requester_name && formik.errors.requester_name}
@@ -91,6 +100,11 @@ export const DocumentFormAdd = (props) => {
                 onChange={formik.handleChange}
                 value={formik.values.requester_name}
                 variant="outlined"
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "black",
+                  },
+                }}
               />
             </Grid>
             <Grid
@@ -99,6 +113,7 @@ export const DocumentFormAdd = (props) => {
               xs={12}
             >
               <TextField
+                disabled={!isEdit}
                 error={Boolean(formik.touched.document_title && formik.errors.document_title)}
                 fullWidth
                 helperText={formik.touched.document_title && formik.errors.document_title}
@@ -109,6 +124,11 @@ export const DocumentFormAdd = (props) => {
                 onChange={formik.handleChange}
                 value={formik.values.document_title}
                 variant="outlined"
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "black",
+                  },
+                }}
               />
             </Grid>
             <Grid
@@ -117,6 +137,7 @@ export const DocumentFormAdd = (props) => {
               xs={12}
             >
               <TextField
+                disabled={!isEdit}
                 error={Boolean(formik.touched.description && formik.errors.description)}
                 fullWidth
                 helperText={formik.touched.description && formik.errors.description}
@@ -129,6 +150,11 @@ export const DocumentFormAdd = (props) => {
                 variant="outlined"
                 multiline
                 maxRows={5}
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "black",
+                  },
+                }}
               />
             </Grid>
             <Grid
@@ -136,26 +162,64 @@ export const DocumentFormAdd = (props) => {
               md={6}
               xs={12}
             >
-              <SelectAsync name='Company' formik={formik} data={(search) => getDatas('company', { search })} />
+              <SelectAsync
+                name='Company'
+                formik={formik}
+                data={(search) => getDatas('company', { search })}
+                disabled={!isEdit}
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "black",
+                  },
+                }}
+                defaultValue={detail.company}
+              />
+            </Grid>
+            <Grid
+              item
+              md={6}
+              xs={12}
+            >
+              <TextField
+                disabled={!finish || (finish && !isEdit)}
+                error={Boolean(formik.touched.document_link && formik.errors.document_link)}
+                fullWidth
+                helperText={formik.touched.document_link && formik.errors.document_link}
+                label="Document Link"
+                margin="normal"
+                name="document_link"
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                value={formik.values.document_link}
+                variant="outlined"
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "black",
+                  },
+                }}
+              />
             </Grid>
           </Grid>
         </CardContent>
         <Divider />
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            p: 2
-          }}
+        <Grid
+          container
+          spacing={3}
+          p={2}
         >
-          <Button
-            color="primary"
-            variant="contained"
-            onClick={formik.submitForm}
-          >
-            Save details
-          </Button>
-        </Box>
+          <Grid item xs={6}>
+            <Button
+              variant='contained'
+              onClick={Router.back}
+              color='inherit'
+            >
+              Back
+            </Button>
+          </Grid>
+          <Grid item xs={6} textAlign='right'>
+            <DocumentDetailButton edit={{ isEdit, setIsEdit }} formik={formik} />
+          </Grid>
+        </Grid>
       </Card>
     </form>
   );

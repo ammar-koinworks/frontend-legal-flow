@@ -36,8 +36,10 @@ const Page = () => {
 
 Page.getLayout = (page) => (
   <DashboardLayout>
+    <RoleGuard page='document' access='read'>
       {page}
-  </DashboardLayout>
+    </RoleGuard>
+  </DashboardLayout >
 );
 
 export default Page;

@@ -2,6 +2,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import {
   Box,
   Card,
+  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -9,11 +10,13 @@ import {
   TablePagination,
   TableRow,
 } from '@mui/material';
+import Router from 'next/router';
 import { useGetDatasTable } from '../../hooks/table';
 import { documents } from '../../api/document';
+import { Visibility } from '@mui/icons-material';
 
 export const DocumentListResults = ({ tableContext }) => {
-  const { datas, totalDatas } = useGetDatasTable(tableContext.query, documents(tableContext.query));
+  const { datas, totalDatas } = useGetDatasTable(tableContext.query, () => documents(tableContext.query));
 
   return (
     <Card>
@@ -37,6 +40,9 @@ export const DocumentListResults = ({ tableContext }) => {
                 <TableCell>
                   Created At
                 </TableCell>
+                <TableCell>
+                  Action
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -59,6 +65,15 @@ export const DocumentListResults = ({ tableContext }) => {
                   </TableCell>
                   <TableCell>
                     {data.created_at}
+                  </TableCell>
+                  <TableCell>
+                    <IconButton
+                      color="info"
+                      onClick={() => Router.push(`documents/detail/${data.id}`)}
+                      title="detail"
+                    >
+                      <Visibility />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               ))}

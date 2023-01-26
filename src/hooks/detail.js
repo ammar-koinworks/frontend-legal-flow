@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { useAlertContext } from "../contexts/alert";
 
-export function useGetDatasTable(query, data) {
-  const [datas, setDatas] = useState([]);
-  const [totalDatas, setTotalDatas] = useState(0);
+export function useGetDetail(data) {
+  const [detail, setDetail] = useState({ id: null });
   const { setAlert } = useAlertContext();
 
   useEffect(() => {
@@ -12,8 +11,7 @@ export function useGetDatasTable(query, data) {
         const res = await data();
 
         if (res.success) {
-          setDatas(res.data);
-          setTotalDatas(res.count);
+          setDetail(res.data);
         } else {
           setAlert("error", res.message);
         }
@@ -23,10 +21,9 @@ export function useGetDatasTable(query, data) {
     }
 
     getDocuments();
-  }, [query]);
+  }, []);
 
   return {
-    datas,
-    totalDatas,
+    detail,
   }
 }
