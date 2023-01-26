@@ -16,14 +16,17 @@ import { XCircle as XCircleIcon } from '../icons/x-circle';
 import { Logo } from './logo';
 import { NavItem } from './nav-item';
 import { FileCopy } from '@mui/icons-material';
+import { useAuthContext } from '../contexts/auth-context';
 
-const items = [
+const itemList = [
   {
+    id: 'dashboard',
     href: '/',
     icon: (<ChartBarIcon fontSize="small" />),
     title: 'Dashboard'
   },
   {
+    id: 'document',
     href: '/documents',
     icon: (<FileCopy fontSize="small" />),
     title: 'Documents'
@@ -67,6 +70,9 @@ export const DashboardSidebar = (props) => {
     defaultMatches: true,
     noSsr: false
   });
+
+  const { roleAccess } = useAuthContext();
+  const items = roleAccess ? itemList.filter(v => roleAccess[v.id]?.read === true) : [];
 
   useEffect(
     () => {

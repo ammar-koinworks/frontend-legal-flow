@@ -122,7 +122,7 @@ export const AuthProvider = (props) => {
     <AuthContext.Provider
       value={{
         ...state,
-        roleAccess: roleAccess[state.user?.position?.name.toLowerCase()],
+        roleAccess: roleAccess[state.user?.role?.name.toLowerCase()],
         signIn,
         signOut
       }}
