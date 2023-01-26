@@ -13,7 +13,7 @@ import Router from 'next/router';
 import { useAuthContext } from '../../contexts/auth-context';
 
 export const DocumentListToolbar = ({ tableContext }) => {
-  const { roleAccess: { document: { create } } } = useAuthContext();
+  const { roleAccess } = useAuthContext();
 
   return (
     <Box>
@@ -32,7 +32,7 @@ export const DocumentListToolbar = ({ tableContext }) => {
         >
           Documents
         </Typography>
-        {create &&
+        {roleAccess?.document?.create &&
           <Box sx={{ m: 1 }}>
             <Button
               color="primary"
