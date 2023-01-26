@@ -34,3 +34,41 @@ export const document = async (id) => {
 
   return await response.json();
 }
+
+export const documentUpdate = async (id, data) => {
+  const response = await fetch(`${MEMBER_URL}/document-request/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': TOKEN,
+    },
+    body: JSON.stringify(data),
+  })
+
+  return await response.json();
+}
+
+export const documentFinish = async (id, data) => {
+  const response = await fetch(`${MEMBER_URL}/document-request/finish/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': TOKEN,
+    },
+    body: JSON.stringify(data),
+  })
+
+  return await response.json();
+}
+
+export const documentDelete = async (id) => {
+  const response = await fetch(`${MEMBER_URL}/document-request/${id}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': TOKEN,
+    },
+  })
+
+  return await response.json();
+}

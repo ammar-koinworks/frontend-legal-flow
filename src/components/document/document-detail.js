@@ -216,6 +216,9 @@ export const DocumentDetail = (props) => {
               Back
             </Button>
           </Grid>
+          <Grid item xs={6} textAlign='right'>
+            <DocumentDetailButton edit={{ isEdit, setIsEdit }} formik={formik} />
+          </Grid>
         </Grid>
       </Card>
     </form>
