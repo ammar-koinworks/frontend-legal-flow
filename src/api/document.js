@@ -5,7 +5,7 @@ export const documentStore = async (data) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': TOKEN,
+      'Authorization': TOKEN(),
     },
     body: JSON.stringify(data),
   })
@@ -17,7 +17,7 @@ export const documents = async (query) => {
   const response = await fetch(`${MEMBER_URL}/document-request?${new URLSearchParams(query)}`, {
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': TOKEN,
+      'Authorization': TOKEN(),
     }
   })
 
@@ -28,7 +28,7 @@ export const document = async (id) => {
   const response = await fetch(`${MEMBER_URL}/document-request/${id}`, {
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': TOKEN,
+      'Authorization': TOKEN(),
     }
   })
 

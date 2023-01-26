@@ -16,7 +16,7 @@ export const getUser = async () => {
   const response = await fetch(`${MEMBER_URL}/user/get-info`, {
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': TOKEN,
+      'Authorization': TOKEN(),
     },
   })
 
@@ -64,7 +64,7 @@ export const updateProfile = async (id, data) => {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': TOKEN,
+      'Authorization': TOKEN(),
     },
     body: JSON.stringify(data),
   })
@@ -77,7 +77,7 @@ export const changePassword = async (data) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': TOKEN,
+      'Authorization': TOKEN(),
     },
     body: JSON.stringify(data),
   })
