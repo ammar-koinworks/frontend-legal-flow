@@ -38,6 +38,9 @@ export const DocumentListResults = ({ tableContext }) => {
                   Description
                 </TableCell>
                 <TableCell>
+                  Status
+                </TableCell>
+                <TableCell>
                   Created At
                 </TableCell>
                 <TableCell>
@@ -62,6 +65,9 @@ export const DocumentListResults = ({ tableContext }) => {
                   </TableCell>
                   <TableCell>
                     {data.Description}
+                  </TableCell>
+                  <TableCell>
+                    {data.request_status?.name}
                   </TableCell>
                   <TableCell>
                     {data.created_at}

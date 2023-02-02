@@ -19,11 +19,12 @@ import { useAlertContext } from '../../contexts/alert';
 import { document, documentUpdate } from '../../api/document';
 import { useState } from 'react';
 import { useGetDetail } from '../../hooks/detail';
-import { DocumentDetailButton } from './document-detail-button';
+// import { DocumentDetailButton } from './document-detail-button';
 import { useAuthContext } from '../../contexts/auth-context';
 
 export const DocumentDetail = (props) => {
-  const { roleAccess: { document: { finish } } } = useAuthContext();
+  const { roleAccess } = useAuthContext();
+  const finish = roleAccess?.document?.finish;
   const { query: { id } } = useRouter();
   const { detail } = useGetDetail(() => document(id));
   const alertContext = useAlertContext();
@@ -191,6 +192,26 @@ export const DocumentDetail = (props) => {
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
                 value={formik.values.document_link}
+                variant="outlined"
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "black",
+                  },
+                }}
+              />
+            </Grid>
+            <Grid
+              item
+              md={6}
+              xs={12}
+            >
+              <TextField
+                disabled={true}
+                fullWidth
+                label="Status"
+                margin="normal"
+                name="status"
+                value={detail?.request_status?.name}
                 variant="outlined"
                 sx={{
                   "& .MuiInputBase-input.Mui-disabled": {
