@@ -19,7 +19,7 @@ import { useAlertContext } from '../../contexts/alert';
 import { document, documentUpdate } from '../../api/document';
 import { useState } from 'react';
 import { useGetDetail } from '../../hooks/detail';
-// import { DocumentDetailButton } from './document-detail-button';
+import { DocumentDetailButton } from './document-detail-button';
 import { useAuthContext } from '../../contexts/auth-context';
 
 export const DocumentDetail = (props) => {
