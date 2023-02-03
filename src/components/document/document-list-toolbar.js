@@ -64,7 +64,7 @@ export const DocumentListToolbar = ({ tableContext }) => {
                     </InputAdornment>
                   )
                 }}
-                placeholder="Search customer"
+                placeholder="Search document"
                 variant="outlined"
                 onChange={debounce(e => tableContext.searchHandler(e.target.value), 500)}
               />

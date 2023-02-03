@@ -153,7 +153,7 @@ export const DocumentFormAdd = (props) => {
             variant="contained"
             onClick={formik.submitForm}
           >
-            Save details
+            Submit
           </Button>
         </Box>
       </Card>
