@@ -2,8 +2,9 @@ import * as React from 'react';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { debounce } from '@mui/material/utils';
+import { userSelectMapping } from '../utils/userSelectMapping';
 
-export default function SelectAsync({ name, formik, data, defaultValue = { id: null, name: null }, disabled = false, sx = {} }) {
+export default function SelectAsync({ name, formik, data, defaultValue = { id: null, name: null }, disabled = false, sx = {}, formName = null, user = false }) {
   const [value, setValue] = React.useState(null);
   const [inputValue, setInputValue] = React.useState('');
   const [options, setOptions] = React.useState([]);
@@ -14,7 +15,7 @@ export default function SelectAsync({ name, formik, data, defaultValue = { id: n
         const getData = data(search);
 
         getData.then((res) => {
-          const data = res?.data?.sort((a, b) => (a.name > b.name) ? 1 : -1)
+          const data = user ? userSelectMapping(res.data) : res?.data?.sort((a, b) => (a.name > b.name) ? 1 : -1);
 
           setOptions(data);
           return data;
@@ -36,6 +37,8 @@ export default function SelectAsync({ name, formik, data, defaultValue = { id: n
     }
   }, [defaultValue.id]);
 
+  const exactName = `${formName ? formName : name.toLowerCase() + '_id'}`;
+
   return (
     <Autocomplete
       id={name}
@@ -52,7 +55,7 @@ export default function SelectAsync({ name, formik, data, defaultValue = { id: n
       onChange={(event, newValue) => {
         setValue(newValue);
         setInputValue('');
-        formik.setFieldValue(`${name.toLowerCase()}_id`, newValue ? newValue.id : null);
+        formik.setFieldValue(exactName, newValue ? newValue.id : null);
       }}
       onInputChange={(event, newInputValue) => {
         setInputValue(newInputValue);
@@ -63,8 +66,8 @@ export default function SelectAsync({ name, formik, data, defaultValue = { id: n
         <TextField
           {...params}
           label={name}
-          error={Boolean(formik.touched[name.toLowerCase()] && formik.errors[name.toLowerCase()])}
-          helperText={formik.touched[name.toLowerCase()] && formik.errors[name.toLowerCase()]}
+          error={Boolean(formik.touched[exactName] && formik.errors[exactName])}
+          helperText={formik.touched[exactName] && formik.errors[exactName]}
           margin='normal'
           onBlur={formik.handleBlur}
         />

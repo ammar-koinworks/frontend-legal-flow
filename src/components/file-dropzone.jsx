@@ -1,6 +1,7 @@
 import { CancelRounded, Visibility } from '@mui/icons-material'
 import { Box, Button, CircularProgress, Grid, Typography } from '@mui/material'
 import React from 'react'
+import { camelize } from '../utils/camelize'
 
 export default function FileDropzone({ file }) {
   return (
@@ -13,10 +14,10 @@ export default function FileDropzone({ file }) {
       }}
     >
       <Grid container space={2}>
-        <Grid item xs={2} alignItems={'center'}>
-          {file.name.toUpperCase()}
+        <Grid item xs={12} alignItems={'center'} mb={1}>
+          {camelize(file.name)} File
         </Grid>
-        <Grid item xs={10} textAlign={'right'}>
+        <Grid item xs={12} textAlign={'right'}>
           <Box
             {...file.getRootProps(file.style)}
             sx={{ bgcolor: 'grey.200', cursor: 'pointer' }}
