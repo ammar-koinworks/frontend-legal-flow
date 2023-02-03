@@ -2,20 +2,10 @@ import { useEffect } from 'react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
-import { Box, Button, Divider, Drawer, Typography, useMediaQuery } from '@mui/material';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import { Box, Divider, Drawer, Typography, useMediaQuery } from '@mui/material';
 import { ChartBar as ChartBarIcon } from '../icons/chart-bar';
-import { Cog as CogIcon } from '../icons/cog';
-import { Lock as LockIcon } from '../icons/lock';
-import { Selector as SelectorIcon } from '../icons/selector';
-import { ShoppingBag as ShoppingBagIcon } from '../icons/shopping-bag';
-import { User as UserIcon } from '../icons/user';
-import { UserAdd as UserAddIcon } from '../icons/user-add';
-import { Users as UsersIcon } from '../icons/users';
-import { XCircle as XCircleIcon } from '../icons/x-circle';
-import { Logo } from './logo';
 import { NavItem } from './nav-item';
-import { FileCopy } from '@mui/icons-material';
+import { FileCopy, UploadFile } from '@mui/icons-material';
 import { useAuthContext } from '../contexts/auth-context';
 
 const itemList = [
@@ -26,41 +16,17 @@ const itemList = [
     title: 'Dashboard'
   },
   {
+    id: 'request',
+    href: '/requests',
+    icon: (<UploadFile fontSize="small" />),
+    title: 'Requests'
+  },
+  {
     id: 'document',
     href: '/documents',
     icon: (<FileCopy fontSize="small" />),
     title: 'Documents'
   },
-  // {
-  //   href: '/products',
-  //   icon: (<ShoppingBagIcon fontSize="small" />),
-  //   title: 'Products'
-  // },
-  // {
-  //   href: '/account',
-  //   icon: (<UserIcon fontSize="small" />),
-  //   title: 'Account'
-  // },
-  // {
-  //   href: '/settings',
-  //   icon: (<CogIcon fontSize="small" />),
-  //   title: 'Settings'
-  // },
-  // {
-  //   href: '/login',
-  //   icon: (<LockIcon fontSize="small" />),
-  //   title: 'Login'
-  // },
-  // {
-  //   href: '/register',
-  //   icon: (<UserAddIcon fontSize="small" />),
-  //   title: 'Register'
-  // },
-  // {
-  //   href: '/404',
-  //   icon: (<XCircleIcon fontSize="small" />),
-  //   title: 'Error'
-  // }
 ];
 
 export const DashboardSidebar = (props) => {

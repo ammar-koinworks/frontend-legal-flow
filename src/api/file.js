@@ -4,6 +4,11 @@ export function fileConfig(type) {
   let url, key, multiple;
 
   switch (type) {
+    case 'agreement':
+      url = 'agreement-upload'
+      key = 'agreement_file'
+      multiple = true
+      break;
     case 'pdf':
       url = 'pdf-file'
       key = 'pdf_file'
@@ -42,7 +47,7 @@ export const fileStore = async (type, data) => {
   const options = {
     method: 'POST',
     headers: {
-      'Authorization': TOKEN,
+      'Authorization': TOKEN(),
     },
     body: body
   };
@@ -60,7 +65,7 @@ export const fileDelete = async (type, id) => {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': TOKEN,
+      'Authorization': TOKEN(),
     },
   });
 
