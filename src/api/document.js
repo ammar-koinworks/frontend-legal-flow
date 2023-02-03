@@ -40,7 +40,7 @@ export const documentUpdate = async (id, data) => {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': TOKEN,
+      'Authorization': TOKEN(),
     },
     body: JSON.stringify(data),
   })
@@ -53,7 +53,7 @@ export const documentFinish = async (id, data) => {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': TOKEN,
+      'Authorization': TOKEN(),
     },
     body: JSON.stringify(data),
   })
@@ -66,7 +66,7 @@ export const documentDelete = async (id) => {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': TOKEN,
+      'Authorization': TOKEN(),
     },
   })
 
