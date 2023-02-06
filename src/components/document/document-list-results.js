@@ -86,7 +86,7 @@ export const DocumentListResults = ({ tableContext }) => {
                 :
                 <TableRow>
                   <TableCell
-                    colSpan={6}
+                    colSpan={'100'}
                     align='center'
                   >
                     No data
