@@ -3,7 +3,7 @@ import { Box, Button, CircularProgress, Grid, Typography } from '@mui/material'
 import React from 'react'
 import { camelize } from '../utils/camelize'
 
-export default function FileDropzone({ file }) {
+export default function FileDropzone({ file, isEdit = true }) {
   return (
     <Box
       sx={{
@@ -17,7 +17,7 @@ export default function FileDropzone({ file }) {
         <Grid item xs={12} alignItems={'center'} mb={1}>
           {camelize(file.name)} File
         </Grid>
-        <Grid item xs={12} textAlign={'right'}>
+        {isEdit && <Grid item xs={12} textAlign={'right'}>
           <Box
             {...file.getRootProps(file.style)}
             sx={{ bgcolor: 'grey.200', cursor: 'pointer' }}
@@ -32,7 +32,7 @@ export default function FileDropzone({ file }) {
               </Box>
             }
           </Box>
-        </Grid>
+        </Grid>}
       </Grid>
       {file.file && file.file.map((val, i) => {
         return (
@@ -49,7 +49,7 @@ export default function FileDropzone({ file }) {
               >
                 <Visibility />
               </Button>
-              <Button
+              {isEdit && <Button
                 color='error'
                 variant="contained"
                 size='small'
@@ -57,7 +57,7 @@ export default function FileDropzone({ file }) {
                 onClick={() => file.delFileHandler(val?.id)}
               >
                 <CancelRounded />
-              </Button>
+              </Button>}
             </Grid>
           </Grid>
         )

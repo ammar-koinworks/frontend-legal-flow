@@ -25,7 +25,7 @@ import FileDropzone from '../file-dropzone';
 export const RequestDetail = (props) => {
   const { query: { id } } = useRouter();
   const { detail } = useGetDetail(() => request(id));
-  const file = useFile('agreement');
+  const file = useFile('agreement', detail.agreement_upload);
   const alertContext = useAlertContext();
   const [isEdit, setIsEdit] = useState(false);
 
@@ -70,6 +70,13 @@ export const RequestDetail = (props) => {
     }),
     onSubmit: async (data) => {
       try {
+        const fileValidation = file.validateFile();
+        if (!fileValidation) {
+          alertContext.setAlert("error", 'File is required');
+        } else {
+          data.file_id = fileValidation;
+        }
+
         const res = await requestUpdate(id, data);
 
         if (res.success) {
@@ -238,8 +245,9 @@ export const RequestDetail = (props) => {
               item
               md={6}
               xs={12}
+              mt={2}
             >
-              <FileDropzone file={file} />
+              <FileDropzone file={file} isEdit={isEdit} />
             </Grid>
             <Grid
               item

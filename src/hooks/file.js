@@ -18,7 +18,7 @@ export function useFile(name, data = null) {
     } else if (localFile) {
       setFile(JSON.parse(localFile));
     }
-  }, [])
+  }, [data])
 
   const onDrop = useCallback(acceptedFiles => {
     const storeFile = async () => {
