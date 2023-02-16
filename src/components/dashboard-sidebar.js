@@ -6,6 +6,8 @@ import { Box, Divider, Drawer, Typography, useMediaQuery } from '@mui/material';
 import { ChartBar as ChartBarIcon } from '../icons/chart-bar';
 import { NavItem } from './nav-item';
 import { FileCopy, UploadFile } from '@mui/icons-material';
+import EmojiObjectsIcon from '@mui/icons-material/EmojiObjects';
+// import AssuredWorkloadIcon from '@mui/icons-material/AssuredWorkload';
 import { useAuthContext } from '../contexts/auth-context';
 
 const itemList = [
@@ -26,6 +28,12 @@ const itemList = [
     href: '/documents',
     icon: (<FileCopy fontSize="small" />),
     title: 'Documents'
+  },
+  {
+    id: 'opinion',
+    href: '/opinions',
+    icon: (<EmojiObjectsIcon fontSize="small" />),
+    title: 'Opinions'
   },
 ];
 

@@ -16,6 +16,13 @@ export const roleAccess = {
       'update': true,
       'delete': true,
       'finish': false,
+    },
+    'opinion': {
+      'create': true,
+      'read': true,
+      'update': true,
+      'delete': true,
+      'finish': false,
     }
   },
   'admin': {
@@ -30,6 +37,13 @@ export const roleAccess = {
       'finish': true,
     },
     'request': {
+      'create': true,
+      'read': true,
+      'update': true,
+      'delete': true,
+      'finish': true,
+    },
+    'opinion': {
       'create': true,
       'read': true,
       'update': true,
@@ -54,6 +68,13 @@ export const roleAccess = {
       'update': true,
       'delete': true,
       'finish': true,
+    },
+    'opinion': {
+      'create': true,
+      'read': true,
+      'update': true,
+      'delete': true,
+      'finish': false,
     }
   },
 }

@@ -106,24 +106,6 @@ export const RequestFormAdd = (props) => {
               xs={12}
             >
               <TextField
-                error={Boolean(formik.touched.requester_name && formik.errors.requester_name)}
-                fullWidth
-                helperText={formik.touched.requester_name && formik.errors.requester_name}
-                label="Requesters Name"
-                margin="normal"
-                name="requester_name"
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-                value={formik.values.requester_name}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
                 error={Boolean(formik.touched.agreement_title && formik.errors.agreement_title)}
                 fullWidth
                 helperText={formik.touched.agreement_title && formik.errors.agreement_title}
