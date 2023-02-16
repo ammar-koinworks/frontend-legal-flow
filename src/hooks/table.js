@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAlertContext } from "../contexts/alert";
 
-export function useGetDatasTable(query, data) {
+export function useGetDatasTable(query, data, rerender = []) {
   const [datas, setDatas] = useState([]);
   const [totalDatas, setTotalDatas] = useState(0);
   const { setAlert } = useAlertContext();
@@ -23,7 +23,7 @@ export function useGetDatasTable(query, data) {
     }
 
     getDocuments();
-  }, [query]);
+  }, [query, ...rerender]);
 
   return {
     datas,

@@ -48,6 +48,18 @@ export const opinionUpdate = async (id, data) => {
   return await response.json();
 }
 
+export const opinionFinish = async (id) => {
+  const response = await fetch(`${MEMBER_URL}/opinion-request/finish/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': TOKEN(),
+    },
+  })
+
+  return await response.json();
+}
+
 export const opinionDelete = async (id) => {
   const response = await fetch(`${MEMBER_URL}/opinion-request/${id}`, {
     method: 'DELETE',

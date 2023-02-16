@@ -11,43 +11,15 @@ import {
   TableRow,
 } from '@mui/material';
 import Router from 'next/router';
-import { useState, useEffect } from 'react';
-// import { useGetDatasTable } from '../../hooks/table';
-import { opinions, opinionDelete } from '../../api/opinion';
-import { Visibility, Delete } from '@mui/icons-material';
-import { useAlertContext } from '../../contexts/alert';
+import { useState } from 'react';
+import { useGetDatasTable } from '../../hooks/table';
+import { opinions } from '../../api/opinion';
+import { Visibility, Delete, CheckCircleOutline } from '@mui/icons-material';
+import { useOpinionAction } from'../../hooks/opinion';
 
-export const OpinionListResults = ({ tableContext }) => {
-  const alertContext = useAlertContext();
-  // const { datas, totalDatas } = useGetDatasTable(tableContext.query, () => opinions(tableContext.query));
-  const [datas, setDatas] = useState([]);
-  const [totalDatas, setTotalDatas] = useState(0);
-
-  const getData = async () => {
-    const res = await opinions(tableContext.query);
-    setDatas(res.data);
-    setTotalDatas(res.count);
-  };
-
-  useEffect(() => {
-    getData();
-  }, [tableContext.query]);
-
-  const deleteHandler = async (id) => {
-    try {
-      const res = await opinionDelete(id);
-
-      if (res.success) {
-        alertContext.setAlert("success", res.message);
-        getData();
-      } else {
-        alertContext.setAlert("error", res.message);
-      }
-
-    } catch (err) {
-      alertContext.setAlert("error", err.message);
-    }
-  };
+export const OpinionListResults = ({ tableContext, action = '' }) => {
+  const { datas, totalDatas } = useGetDatasTable(tableContext.query, () => opinions(tableContext.query));
+  const { deleteHandler, finishHandler } = useOpinionAction();
 
   return (
     <Card>
@@ -91,7 +63,7 @@ export const OpinionListResults = ({ tableContext }) => {
                   <TableCell>
                     {data.created_at}
                   </TableCell>
-                  <TableCell>
+                  <TableCell align='center'>
                     <IconButton
                       color="info"
                       onClick={() => Router.push(`opinions/detail/${data.id}`)}
@@ -99,13 +71,20 @@ export const OpinionListResults = ({ tableContext }) => {
                     >
                       <Visibility />
                     </IconButton>
-                    <IconButton
-                      color="info"
-                      onClick={() => deleteHandler(data.id)}
+                    {action !== 'finish' && <IconButton
+                      color="error"
+                      onClick={() => { deleteHandler(data.id); tableContext.pageHandler(1); }}
                       title="detail"
                     >
                       <Delete />
-                    </IconButton>
+                    </IconButton>}
+                    {action === 'finish' && data.request_status.name === 'Open' && <IconButton
+                      color="warning"
+                      onClick={() => { finishHandler(data.id); tableContext.pageHandler(1); }}
+                      title="detail"
+                    >
+                      <CheckCircleOutline />
+                    </IconButton>}
                   </TableCell>
                 </TableRow>
               ))

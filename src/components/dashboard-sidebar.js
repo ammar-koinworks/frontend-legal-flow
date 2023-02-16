@@ -3,39 +3,8 @@ import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import { Box, Divider, Drawer, Typography, useMediaQuery } from '@mui/material';
-import { ChartBar as ChartBarIcon } from '../icons/chart-bar';
-import { NavItem } from './nav-item';
-import { FileCopy, UploadFile } from '@mui/icons-material';
-import EmojiObjectsIcon from '@mui/icons-material/EmojiObjects';
 // import AssuredWorkloadIcon from '@mui/icons-material/AssuredWorkload';
-import { useAuthContext } from '../contexts/auth-context';
-
-const itemList = [
-  {
-    id: 'dashboard',
-    href: '/',
-    icon: (<ChartBarIcon fontSize="small" />),
-    title: 'Dashboard'
-  },
-  {
-    id: 'request',
-    href: '/requests',
-    icon: (<UploadFile fontSize="small" />),
-    title: 'Requests'
-  },
-  {
-    id: 'document',
-    href: '/documents',
-    icon: (<FileCopy fontSize="small" />),
-    title: 'Documents'
-  },
-  {
-    id: 'opinion',
-    href: '/opinions',
-    icon: (<EmojiObjectsIcon fontSize="small" />),
-    title: 'Opinions'
-  },
-];
+import MenuList from './menu-list';
 
 export const DashboardSidebar = (props) => {
   const { open, onClose } = props;
@@ -44,9 +13,6 @@ export const DashboardSidebar = (props) => {
     defaultMatches: true,
     noSsr: false
   });
-
-  const { roleAccess } = useAuthContext();
-  const items = roleAccess ? itemList.filter(v => roleAccess[v.id]?.read === true) : [];
 
   useEffect(
     () => {
@@ -94,14 +60,7 @@ export const DashboardSidebar = (props) => {
           }}
         />
         <Box sx={{ flexGrow: 1 }}>
-          {items.map((item) => (
-            <NavItem
-              key={item.title}
-              icon={item.icon}
-              href={item.href}
-              title={item.title}
-            />
-          ))}
+          <MenuList />
         </Box>
         <Divider sx={{ borderColor: '#2D3748' }} />
       </Box>

@@ -13,7 +13,7 @@ const Page = () => {
         <>
             <Head>
                 <title>
-                    Opinion | Legal Web
+                    Opinions | Legal Web
                 </title>
             </Head>
             <Box
