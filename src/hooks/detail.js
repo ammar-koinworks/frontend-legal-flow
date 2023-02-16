@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAlertContext } from "../contexts/alert";
 
-export function useGetDetail(data) {
+export function useGetDetail(data, rerender = []) {
   const [detail, setDetail] = useState({ id: null });
   const { setAlert } = useAlertContext();
 
@@ -21,7 +21,7 @@ export function useGetDetail(data) {
     }
 
     getDocuments();
-  }, []);
+  }, rerender);
 
   return {
     detail,

@@ -19,14 +19,15 @@ import { useAlertContext } from '../../contexts/alert';
 import { document, documentUpdate } from '../../api/document';
 import { useState } from 'react';
 import { useGetDetail } from '../../hooks/detail';
-import { DocumentDetailButton } from './document-detail-button';
+import { EditButton } from './edit-button';
 import { useAuthContext } from '../../contexts/auth-context';
+import FinishButton from './finish-button';
 
 export const DocumentDetail = (props) => {
   const { roleAccess } = useAuthContext();
-  const finish = roleAccess?.document?.finish;
-  const { query: { id } } = useRouter();
-  const { detail } = useGetDetail(() => document(id));
+  const { query: { id, action } } = useRouter();
+  const [finish, setFinish] = useState(0);
+  const { detail } = useGetDetail(() => document(id), [finish]);
   const alertContext = useAlertContext();
   const [isEdit, setIsEdit] = useState(false);
 
@@ -72,6 +73,8 @@ export const DocumentDetail = (props) => {
     }
   });
 
+  if (detail.id === null) return <>Loading</>
+
   return (
     <form
       autoComplete="off"
@@ -90,7 +93,7 @@ export const DocumentDetail = (props) => {
               xs={12}
             >
               <TextField
-                disabled={!isEdit}
+                disabled={true}
                 error={Boolean(formik.touched.requester_name && formik.errors.requester_name)}
                 fullWidth
                 helperText={formik.touched.requester_name && formik.errors.requester_name}
@@ -182,7 +185,7 @@ export const DocumentDetail = (props) => {
               xs={12}
             >
               <TextField
-                disabled={!finish || (finish && !isEdit)}
+                disabled={true}
                 error={Boolean(formik.touched.document_link && formik.errors.document_link)}
                 fullWidth
                 helperText={formik.touched.document_link && formik.errors.document_link}
@@ -238,7 +241,8 @@ export const DocumentDetail = (props) => {
             </Button>
           </Grid>
           <Grid item xs={6} textAlign='right'>
-            <DocumentDetailButton edit={{ isEdit, setIsEdit }} formik={formik} />
+            {action !== 'finish' && roleAccess?.document?.update && <EditButton edit={{ isEdit, setIsEdit }} formik={formik} />}
+            {action === 'finish' && roleAccess?.document?.finish && detail.document_link === null && <FinishButton id={id} setFinish={setFinish} />}
           </Grid>
         </Grid>
       </Card>

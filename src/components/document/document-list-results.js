@@ -13,10 +13,15 @@ import {
 import Router from 'next/router';
 import { useGetDatasTable } from '../../hooks/table';
 import { documents } from '../../api/document';
-import { Visibility } from '@mui/icons-material';
+import { Delete, Visibility } from '@mui/icons-material';
+import { useDocumentAction } from '../../hooks/document';
+import FinishButton from './finish-button';
+import { useState } from 'react';
 
-export const DocumentListResults = ({ tableContext }) => {
-  const { datas, totalDatas } = useGetDatasTable(tableContext.query, () => documents(tableContext.query));
+export const DocumentListResults = ({ tableContext, action = '' }) => {
+  const [finish, setFinish] = useState(0);
+  const { datas, totalDatas } = useGetDatasTable(tableContext.query, () => documents(tableContext.query), [finish]);
+  const { deleteHandler } = useDocumentAction();
 
   return (
     <Card>
@@ -43,7 +48,7 @@ export const DocumentListResults = ({ tableContext }) => {
                 <TableCell>
                   Created At
                 </TableCell>
-                <TableCell>
+                <TableCell align='center'>
                   Action
                 </TableCell>
               </TableRow>
@@ -72,14 +77,22 @@ export const DocumentListResults = ({ tableContext }) => {
                   <TableCell>
                     {data.created_at}
                   </TableCell>
-                  <TableCell>
+                  <TableCell align='center'>
                     <IconButton
                       color="info"
-                      onClick={() => Router.push(`documents/detail/${data.id}`)}
+                      onClick={() => Router.push(`/documents/detail/${data.id}${action === 'finish' ? '?action=finish' : ''}`)}
                       title="detail"
                     >
                       <Visibility />
                     </IconButton>
+                    {action !== 'finish' && <IconButton
+                      color="error"
+                      onClick={() => { deleteHandler(data.id); tableContext.pageHandler(1); }}
+                      title="delete"
+                    >
+                      <Delete />
+                    </IconButton>}
+                    {action === 'finish' && data.document_link === null && <FinishButton id={data.id} icon setFinish={setFinish} />}
                   </TableCell>
                 </TableRow>
               ))
