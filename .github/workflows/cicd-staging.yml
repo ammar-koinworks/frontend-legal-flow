@@ -1,0 +1,59 @@
+name: staging
+
+on:
+  push:
+    branches:
+      - staging
+      - cicd-staging
+env:
+  SERVICE_NAME: frontend-legal-flow
+  RELEASE_NAME: frontend-legal-flow-svc
+  NAMESPACE: tech-labs
+  REGISTRY: asia.gcr.io/tech-labs-357609/frontend-legal-flow
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Google Auth
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: '${{ secrets.GCP_SA_TECHLABS_STAGING }}'
+      - name: Build and Push Image
+        run: |
+          gcloud --quiet auth configure-docker
+          export VERSION=$(git rev-parse --short HEAD)
+          export TAG=${{ env.REGISTRY }}:staging-$VERSION
+          export TAG_LATEST=${{ env.REGISTRY }}:staging-latest
+          docker build -t $TAG -t $TAG_LATEST .
+          docker push ${{ env.REGISTRY }} --all-tags
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Google Auth
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: '${{ secrets.GCP_SA_TECHLABS_STAGING }}'
+      - uses: google-github-actions/get-gke-credentials@v0
+        with:
+          location: asia-southeast2-a
+          cluster_name: techlabs-staging
+      - name: Update Helm Values
+        run: |
+          export VERSION=$(git rev-parse --short HEAD)
+          git clone https://gitlab-ci-token:${{ secrets.TOKEN_GITLAB }}@gitlab-engineering.koinworks.com/devops-hq/gitlab-ci-repo
+          sed -i "s;__IMAGE__;${{ env.REGISTRY }};" gitlab-ci-repo/helmfile.d/staging/${{ env.SERVICE_NAME }}/values-stg.yaml
+          sed -i "s/__TAG__/staging-$VERSION/" gitlab-ci-repo/helmfile.d/staging/${{ env.SERVICE_NAME }}/values-stg.yaml
+          sed -i "s/__SECRET__/${{ secrets.SECRET_IMAGE_GCP }}/" gitlab-ci-repo/helmfile.d/staging/${{ env.SERVICE_NAME }}/values-stg.yaml
+      - name: Helm Upgrade Install
+        run: |
+          helm upgrade --install ${{ env.RELEASE_NAME }} -f gitlab-ci-repo/helmfile.d/staging/${{ env.SERVICE_NAME }}/values-stg.yaml gitlab-ci-repo/helm-chart/charts/helm-template -n ${{ env.NAMESPACE }}
+  clear-cache:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clear Cloudflare Cache
+        run: | 
+          curl -X POST ${{ secrets.CF_URL_PURGE_CACHE }} -H "X-Auth-Email: ${{ secrets.EMAIL_DEVOPS }}" -H "X-Auth-Key: ${{ secrets.CF_AUTH_KEY }}" -H "Content-Type: application/json" --data '{"purge_everything": true}'
