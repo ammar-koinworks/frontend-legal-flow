@@ -12,8 +12,15 @@ import { debounce } from '@mui/material/utils';
 import Router from 'next/router';
 import { useAuthContext } from '../../contexts/auth-context';
 
-export const RequestListToolbar = ({ tableContext }) => {
+export const RequestListToolbar = ({ tableContext, action = '' }) => {
   const { roleAccess } = useAuthContext();
+  let title;
+  if (action === 'admin-approval') title = 'Admin Approval';
+  if (action === 'manager-approval') title = 'Manager Approval';
+  if (action === 'clo-approval') title = 'CLO Approval';
+  if (action === 'dl-approval') title = 'Direct-Line Approval';
+  if (action === 'pic-approval') title = 'PIC Approval';
+
 
   return (
     <Box>
@@ -30,9 +37,9 @@ export const RequestListToolbar = ({ tableContext }) => {
           sx={{ m: 1 }}
           variant="h4"
         >
-          Requests
+          Agreements {title}
         </Typography>
-        {roleAccess?.request?.create &&
+        {roleAccess?.request?.create && action === '' &&
           <Box sx={{ m: 1 }}>
             <Button
               color="primary"

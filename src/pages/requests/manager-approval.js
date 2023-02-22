@@ -13,7 +13,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-          Agreements | Legal Web
+          Requests | Legal Web
         </title>
       </Head>
       <Box
@@ -24,9 +24,9 @@ const Page = () => {
         }}
       >
         <Container maxWidth={false}>
-          <RequestListToolbar tableContext={tableContext} />
+          <RequestListToolbar tableContext={tableContext} action='manager-approval' />
           <Box sx={{ mt: 3 }}>
-            <RequestListResults tableContext={tableContext} />
+            <RequestListResults tableContext={tableContext} action='manager-approval' />
           </Box>
         </Container>
       </Box>

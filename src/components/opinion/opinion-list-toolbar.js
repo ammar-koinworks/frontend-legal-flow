@@ -12,7 +12,7 @@ import { debounce } from '@mui/material/utils';
 import Router from 'next/router';
 import { useAuthContext } from '../../contexts/auth-context';
 
-export const OpinionListToolbar = ({ tableContext }) => {
+export const OpinionListToolbar = ({ tableContext, action = '' }) => {
   const { roleAccess } = useAuthContext();
 
   return (
@@ -30,9 +30,9 @@ export const OpinionListToolbar = ({ tableContext }) => {
           sx={{ m: 1 }}
           variant="h4"
         >
-          Opinions
+          Opinions {action === 'finish' && 'Approval'}
         </Typography>
-        {roleAccess?.opinion?.create &&
+        {roleAccess?.opinion?.create && action !== 'finish' &&
           <Box sx={{ m: 1 }}>
             <Button
               color="primary"

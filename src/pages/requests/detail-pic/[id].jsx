@@ -2,13 +2,13 @@ import Head from 'next/head';
 import { Box, Container, Typography } from '@mui/material';
 import { DashboardLayout } from '../../../components/dashboard-layout';
 import { RoleGuard } from '../../../components/role-guard';
-import { RequestDetail } from '../../../components/request/request-detail';
+import { RequestDetailApproval } from '../../../components/request/request-detail-approval';
 
 const Page = () => (
   <>
     <Head>
       <title>
-        Agreements | Legal Web
+        Agreements PIC Approval | Legal Web
       </title>
     </Head>
     <Box
@@ -25,7 +25,7 @@ const Page = () => (
         >
           Agreement Detail
         </Typography>
-        <RequestDetail />
+        <RequestDetailApproval action='pic-approval' />
       </Container>
     </Box>
   </>

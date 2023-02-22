@@ -21,9 +21,8 @@ import { OpinionDetailButton } from './opinion-detail-button';
 import { useAuthContext } from '../../contexts/auth-context';
 
 export const OpinionDetail = (props) => {
-  // const { roleAccess } = useAuthContext();
-  // const finish = roleAccess?.document?.finish;
-  const { query: { id } } = useRouter();
+  const { roleAccess } = useAuthContext();
+  const { query: { id, action } } = useRouter();
   const { detail } = useGetDetail(() => opinion(id));
   const alertContext = useAlertContext();
   const [isEdit, setIsEdit] = useState(false);
@@ -120,26 +119,6 @@ export const OpinionDetail = (props) => {
               xs={12}
             >
               <TextField
-                disabled={true}
-                fullWidth
-                label="Status"
-                margin="normal"
-                name="status"
-                value={detail?.request_status?.name}
-                variant="outlined"
-                sx={{
-                  "& .MuiInputBase-input.Mui-disabled": {
-                    WebkitTextFillColor: "black",
-                  },
-                }}
-              />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
                 disabled={!isEdit}
                 error={Boolean(formik.touched.usecase && formik.errors.usecase)}
                 fullWidth
@@ -208,6 +187,26 @@ export const OpinionDetail = (props) => {
                 }}
               />
             </Grid>
+            <Grid
+              item
+              md={6}
+              xs={12}
+            >
+              <TextField
+                disabled={true}
+                fullWidth
+                label="Status"
+                margin="normal"
+                name="status"
+                value={detail?.request_status?.name}
+                variant="outlined"
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "black",
+                  },
+                }}
+              />
+            </Grid>
           </Grid>
         </CardContent>
         <Divider />
@@ -226,7 +225,7 @@ export const OpinionDetail = (props) => {
             </Button>
           </Grid>
           <Grid item xs={6} textAlign='right'>
-            <OpinionDetailButton edit={{ isEdit, setIsEdit }} formik={formik} />
+            {detail?.request_status?.name !== "Approved" && <OpinionDetailButton edit={{ isEdit, setIsEdit }} formik={formik} /> }
           </Grid>
         </Grid>
       </Card>

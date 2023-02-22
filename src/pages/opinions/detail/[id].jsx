@@ -33,7 +33,7 @@ const Page = () => (
 
 Page.getLayout = (page) => (
   <DashboardLayout>
-    <RoleGuard page='document' access='read'>
+    <RoleGuard page='opinion' access='read'>
       {page}
     </RoleGuard>
   </DashboardLayout>

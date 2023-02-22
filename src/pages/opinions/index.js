@@ -8,6 +8,7 @@ import { RoleGuard } from '../../components/role-guard';
 
 const Page = () => {
     const tableContext = useTableContext();
+    tableContext.query.is_admin_approval = false;
 
     return (
         <>

@@ -13,8 +13,9 @@ import * as Yup from 'yup';
 import Router from 'next/router';
 
 import SelectAsync from '../select-async';
+import SelectAsyncMultiple from '../select-async-multiple';
 
-import { getDatas } from '../../api/masterData';
+import { getDatas, getDatasUser } from '../../api/masterData';
 import { useAlertContext } from '../../contexts/alert';
 import { useAuthContext } from '../../contexts/auth-context';
 import { useFile } from '../../hooks/file';
@@ -170,7 +171,7 @@ export const RequestFormAdd = (props) => {
               md={6}
               xs={12}
             >
-              <SelectAsync name='PIC' formName={'related_pic_id'} formik={formik} data={(search) => getDatas('user', { search, department_id: user?.department_id })} user={true} />
+              <SelectAsyncMultiple name='PIC' formName={'related_pic_id'} formik={formik} data={(search) => getDatasUser('related-pic', { search })} user={true} />
             </Grid>
             <Grid
               item

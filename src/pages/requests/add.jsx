@@ -8,7 +8,7 @@ const Page = () => (
   <>
     <Head>
       <title>
-        Requests | Legal Web
+        Agreements | Legal Web
       </title>
     </Head>
     <Box
@@ -23,7 +23,7 @@ const Page = () => (
           sx={{ mb: 3 }}
           variant="h4"
         >
-          Request Form
+          Agreement Form
         </Typography>
         <RequestFormAdd />
       </Container>

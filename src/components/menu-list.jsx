@@ -14,9 +14,43 @@ const itemList = [
   },
   {
     id: 'request',
-    href: '/requests',
+    href: null,
     icon: (<UploadFile fontSize="small" />),
-    title: 'Requests'
+    title: 'Agreement',
+    subMenu: [
+      {
+        id: 'read',
+        title: 'List',
+        href: '/requests',
+      },
+      {
+        id: 'finish',
+        title: 'Admin Approval',
+        href: '/requests/admin-approval',
+      },
+      {
+        id: 'finish',
+        title: 'Manager Approval',
+        href: '/requests/manager-approval',
+        specialRole: 'Manager',
+      },
+      {
+        id: 'read',
+        title: 'CLO Approval',
+        href: '/requests/clo-approval',
+        specialRole: 'C-Levels',
+      },
+      {
+        id: 'read',
+        title: 'Direct-Line Approval',
+        href: '/requests/dl-approval',
+      },
+      {
+        id: 'read',
+        title: 'PIC Approval',
+        href: '/requests/pic-approval',
+      },
+    ],
   },
   {
     id: 'document',
@@ -58,7 +92,7 @@ const itemList = [
 
 export default function MenuList() {
   const router = useRouter();
-  const { roleAccess } = useAuthContext();
+  const { roleAccess, user } = useAuthContext();
   const [nested, setNested] = useState('');
 
   return (
@@ -86,19 +120,38 @@ export default function MenuList() {
               <List component="div" disablePadding>
                 {v.subMenu.map((sm, smi) => {
                   const subMenuActive = router.pathname === sm.href;
-                  if (roleAccess[v.id][sm.id]) return (
-                    <ListItemButton
-                      sx={{ pl: 4, backgroundColor: subMenuActive ? 'rgba(255,255,255, 0.08)' : '' }}
-                      key={smi}
-                      onClick={() => Router.push(sm.href)}
-                      selected={subMenuActive}
-                    >
-                      <ListItemIcon sx={{ color: subMenuActive ? 'secondary.main' : '' }}>
-                        <RemoveOutlined fontSize='small' />
-                      </ListItemIcon>
-                      <ListItemText primary={sm.title} sx={{ color: subMenuActive ? 'secondary.main' : '' }} />
-                    </ListItemButton>
-                  )
+                  if (sm.specialRole) {
+                    if (sm.specialRole === user.position.name) {
+                      return (
+                        <ListItemButton
+                          sx={{ pl: 4, backgroundColor: subMenuActive ? 'rgba(255,255,255, 0.08)' : '' }}
+                          key={smi}
+                          onClick={() => Router.push(sm.href)}
+                          selected={subMenuActive}
+                        >
+                          <ListItemIcon sx={{ color: subMenuActive ? 'secondary.main' : '' }}>
+                            <RemoveOutlined fontSize='small' />
+                          </ListItemIcon>
+                          <ListItemText primary={sm.title} sx={{ color: subMenuActive ? 'secondary.main' : '' }} />
+                        </ListItemButton>
+
+                      )
+                    }
+                  } else {
+                    if (roleAccess[v.id][sm.id]) return (
+                      <ListItemButton
+                        sx={{ pl: 4, backgroundColor: subMenuActive ? 'rgba(255,255,255, 0.08)' : '' }}
+                        key={smi}
+                        onClick={() => Router.push(sm.href)}
+                        selected={subMenuActive}
+                      >
+                        <ListItemIcon sx={{ color: subMenuActive ? 'secondary.main' : '' }}>
+                          <RemoveOutlined fontSize='small' />
+                        </ListItemIcon>
+                        <ListItemText primary={sm.title} sx={{ color: subMenuActive ? 'secondary.main' : '' }} />
+                      </ListItemButton>
+                    )
+                  }
                 })}
               </List>
             </Collapse>}

@@ -12,11 +12,33 @@ import {
 } from '@mui/material';
 import Router from 'next/router';
 import { useGetDatasTable } from '../../hooks/table';
-import { Visibility } from '@mui/icons-material';
-import { requests } from '../../api/request';
+import { Visibility, Delete } from '@mui/icons-material';
+import { requests, requestsAdmin, requestsManager, requestsDirectLine,requestsCLO, requestsPIC } from '../../api/request';
+import { useRequestAction } from '../../hooks/request';
 
-export const RequestListResults = ({ tableContext }) => {
-  const { datas, totalDatas } = useGetDatasTable(tableContext.query, () => requests(tableContext.query));
+export const RequestListResults = ({ tableContext, action = '' }) => {
+  let fetch, path;
+  if (action === 'admin-approval') {
+    fetch = requestsAdmin(tableContext.query);
+    path = 'detail-admin';
+  } else if (action === 'manager-approval') {
+    fetch = requestsManager(tableContext.query);
+    path = 'detail-manager';
+  } else if (action === 'clo-approval') {
+    fetch = requestsCLO(tableContext.query);
+    path = 'detail-clo';
+  } else if (action === 'dl-approval') {
+    fetch = requestsDirectLine(tableContext.query);
+    path = 'detail-dl';
+  } else if (action === 'pic-approval') {
+    fetch = requestsPIC(tableContext.query);
+    path = 'detail-pic';
+  } else {
+    fetch =  requests(tableContext.query);
+    path = 'detail';
+  }
+  const { datas, totalDatas } = useGetDatasTable(tableContext.query, () => fetch);
+  const { deleteHandler } = useRequestAction();
 
   return (
     <Card>
@@ -39,9 +61,6 @@ export const RequestListResults = ({ tableContext }) => {
                 </TableCell>
                 <TableCell>
                   Category
-                </TableCell>
-                <TableCell>
-                  PIC
                 </TableCell>
                 <TableCell>
                   Status
@@ -76,9 +95,6 @@ export const RequestListResults = ({ tableContext }) => {
                     {data.agreement_category?.name}
                   </TableCell>
                   <TableCell>
-                    {data.related_pic?.fullname}
-                  </TableCell>
-                  <TableCell>
                     {data.request_status?.name}
                   </TableCell>
                   <TableCell>
@@ -87,11 +103,18 @@ export const RequestListResults = ({ tableContext }) => {
                   <TableCell>
                     <IconButton
                       color="info"
-                      onClick={() => Router.push(`requests/detail/${data.id}`)}
+                      onClick={() => Router.push(`/requests/${path}/${data.id}`)}
                       title="detail"
                     >
                       <Visibility />
                     </IconButton>
+                    {action === '' && <IconButton
+                      color="error"
+                      onClick={() => { deleteHandler(data.id); tableContext.pageHandler(1); }}
+                      title="detail"
+                    >
+                      <Delete />
+                    </IconButton>}
                   </TableCell>
                 </TableRow>
               ))

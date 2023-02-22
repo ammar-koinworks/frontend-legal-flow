@@ -85,7 +85,7 @@ export const DocumentListResults = ({ tableContext, action = '' }) => {
                     >
                       <Visibility />
                     </IconButton>
-                    {action !== 'finish' && <IconButton
+                    {action !== 'finish' && data.request_status.name === 'Open' && <IconButton
                       color="error"
                       onClick={() => { deleteHandler(data.id); tableContext.pageHandler(1); }}
                       title="delete"

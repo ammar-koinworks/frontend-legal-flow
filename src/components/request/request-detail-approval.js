@@ -1,12 +1,13 @@
 import {
-  Box,
   Button,
   Card,
   CardContent,
   Divider,
   Grid,
   TextField,
-  CircularProgress
+  CircularProgress,
+  Autocomplete,
+  Box
 } from '@mui/material';
 
 import { useFormik } from 'formik';
@@ -14,56 +15,85 @@ import * as Yup from 'yup';
 import Router, { useRouter } from 'next/router';
 
 import SelectAsync from '../select-async';
+import ListAsync from  '../list-async'
 
-import { getDatas } from '../../api/masterData';
+import { getDatas, getDatasUser } from '../../api/masterData';
 import { useAlertContext } from '../../contexts/alert';
-import { document, documentUpdate } from '../../api/document';
-import { useState } from 'react';
 import { useGetDetail } from '../../hooks/detail';
-import { EditButton } from './edit-button';
-import { DeleteButton } from './delete-button';
-import { useAuthContext } from '../../contexts/auth-context';
-import FinishButton from './finish-button';
+import { useState, useEffect } from 'react';
+import { RequestDetailButton } from './request-detail-button';
+import { request, requestUpdate } from '../../api/request';
+import { useFile } from '../../hooks/file';
+import FileDropzone from '../file-dropzone';
 
-export const DocumentDetail = (props) => {
-  const { roleAccess } = useAuthContext();
-  const { query: { id, action } } = useRouter();
-  const [finish, setFinish] = useState(0);
-  const { detail } = useGetDetail(() => document(id), [finish]);
+export const RequestDetailApproval = (props) => {
+  const { action } = props;
+  const { query: { id } } = useRouter();
+  const { detail } = useGetDetail(() => request(id));
+  const file = useFile('agreement', detail.agreement_upload);
   const alertContext = useAlertContext();
   const [isEdit, setIsEdit] = useState(false);
-
+  
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
       requester_name: detail.requester_name || '',
-      document_title: detail.document_title || '',
-      description: detail.Description || '',
+      agreement_title: detail.agreement_title || '',
+      commercial_terms: detail.commercial_terms || '',
+      description: detail.description || '',
+      agreement_category_id: detail.agreement_category_id || null,
+      add_related_pic_id: null,
       company_id: detail.company_id || null,
-      document_link: detail.document_link || '',
+      file_id: detail.file_id || null,
     },
     validationSchema: Yup.object({
       requester_name: Yup
         .string()
         .max(255)
         .required('Requester name is required'),
-      document_title: Yup
+      agreement_title: Yup
         .string()
         .max(255)
         .required('Document title is required'),
+      commercial_terms: Yup
+        .string()
+        .max(255)
+        .required('Commercial terms is required'),
       description: Yup
         .string()
         .max(255)
         .required('description is required'),
+      agreement_category_id: Yup
+        .number().typeError('Category is Required')
+        .required('Category is required'),
+      add_related_pic_id: Yup
+        .number().typeError('PIC is Required')
+        .required('PIC is required'),
       company_id: Yup
         .number().typeError('Company is Required')
         .required('Company is required'),
     }),
     onSubmit: async (data) => {
       try {
-        const res = await documentUpdate(id, data);
+        const fileValidation = file.validateFile();
+        if (!fileValidation) {
+          alertContext.setAlert("error", 'File is required');
+        } else {
+          data.file_id = fileValidation;
+        }
+        const newData = {
+          requester_name: data.requester_name,
+          agreement_title: data.agreement_title,
+          commercial_terms: data.commercial_terms,
+          description: data.description,
+          related_pic_id: data.add_related_pic_id,
+          company_id: data.company_id
+        }
+        
+        const res = await requestUpdate(id, newData);
 
         if (res.success) {
+          localStorage.removeItem('agreement');
           alertContext.setAlert("success", res.message);
           setIsEdit(false);
         } else {
@@ -105,7 +135,7 @@ export const DocumentDetail = (props) => {
                 error={Boolean(formik.touched.requester_name && formik.errors.requester_name)}
                 fullWidth
                 helperText={formik.touched.requester_name && formik.errors.requester_name}
-                label="Requester Name"
+                label="Requesters Name"
                 margin="normal"
                 name="requester_name"
                 onBlur={formik.handleBlur}
@@ -126,15 +156,39 @@ export const DocumentDetail = (props) => {
             >
               <TextField
                 disabled={!isEdit}
-                error={Boolean(formik.touched.document_title && formik.errors.document_title)}
+                error={Boolean(formik.touched.agreement_title && formik.errors.agreement_title)}
                 fullWidth
-                helperText={formik.touched.document_title && formik.errors.document_title}
-                label="Document Title"
+                helperText={formik.touched.agreement_title && formik.errors.agreement_title}
+                label="Agreement Title"
                 margin="normal"
-                name="document_title"
+                name="agreement_title"
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
-                value={formik.values.document_title}
+                value={formik.values.agreement_title}
+                variant="outlined"
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "black",
+                  },
+                }}
+              />
+            </Grid>
+            <Grid
+              item
+              md={6}
+              xs={12}
+            >
+              <TextField
+                disabled={!isEdit}
+                error={Boolean(formik.touched.commercial_terms && formik.errors.commercial_terms)}
+                fullWidth
+                helperText={formik.touched.commercial_terms && formik.errors.commercial_terms}
+                label="Commercial Terms"
+                margin="normal"
+                name="commercial_terms"
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                value={formik.values.commercial_terms}
                 variant="outlined"
                 sx={{
                   "& .MuiInputBase-input.Mui-disabled": {
@@ -160,8 +214,46 @@ export const DocumentDetail = (props) => {
                 onChange={formik.handleChange}
                 value={formik.values.description}
                 variant="outlined"
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "black",
+                  },
+                }}
                 multiline
                 maxRows={5}
+              />
+            </Grid>
+            <Grid
+              item
+              md={6}
+              xs={12}
+              mt={2}
+            >
+              <FileDropzone file={file} isEdit={isEdit} />
+            </Grid>
+            <Grid
+              item
+              md={6}
+              xs={12}
+            >
+              <ListAsync 
+                name="PIC"
+                data={() => getDatasUser('related-pic', { search: '' })}
+                defaultValue={detail.related_pics}
+              />
+            </Grid>
+            <Grid
+              item
+              md={6}
+              xs={12}
+            >
+              <SelectAsync
+                disabled={true}
+                name='Category'
+                formName={'agreement_category_id'}
+                formik={formik}
+                data={(search) => getDatas('agreement-category', { search })}
+                defaultValue={detail.agreement_category}
                 sx={{
                   "& .MuiInputBase-input.Mui-disabled": {
                     WebkitTextFillColor: "black",
@@ -175,35 +267,11 @@ export const DocumentDetail = (props) => {
               xs={12}
             >
               <SelectAsync
+                disabled={!isEdit}
                 name='Company'
                 formik={formik}
                 data={(search) => getDatas('company', { search })}
-                disabled={!isEdit}
-                sx={{
-                  "& .MuiInputBase-input.Mui-disabled": {
-                    WebkitTextFillColor: "black",
-                  },
-                }}
                 defaultValue={detail.company}
-              />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                disabled={true}
-                error={Boolean(formik.touched.document_link && formik.errors.document_link)}
-                fullWidth
-                helperText={formik.touched.document_link && formik.errors.document_link}
-                label="Document Link"
-                margin="normal"
-                name="document_link"
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-                value={formik.values.document_link}
-                variant="outlined"
                 sx={{
                   "& .MuiInputBase-input.Mui-disabled": {
                     WebkitTextFillColor: "black",
@@ -249,9 +317,7 @@ export const DocumentDetail = (props) => {
             </Button>
           </Grid>
           <Grid item xs={6} textAlign='right'>
-            {action !== 'finish' && roleAccess?.document?.update && detail.request_status.name === 'Open' && <EditButton edit={{ isEdit, setIsEdit }} formik={formik} />}
-            {action === 'finish' && roleAccess?.document?.finish && detail.document_link === null && <FinishButton id={id} setFinish={setFinish} />}
-            {action !== 'finish' && roleAccess?.document?.delete && detail.request_status.name === 'Open' && <DeleteButton />}
+            <RequestDetailButton edit={{ isEdit, setIsEdit }} action={action} detail={detail} />
           </Grid>
         </Grid>
       </Card>

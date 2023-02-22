@@ -11,11 +11,10 @@ import {
   TableRow,
 } from '@mui/material';
 import Router from 'next/router';
-import { useState } from 'react';
 import { useGetDatasTable } from '../../hooks/table';
-import { opinions } from '../../api/opinion';
 import { Visibility, Delete, CheckCircleOutline } from '@mui/icons-material';
-import { useOpinionAction } from'../../hooks/opinion';
+import { opinions } from '../../api/opinion';
+import { useOpinionAction } from '../../hooks/opinion';
 
 export const OpinionListResults = ({ tableContext, action = '' }) => {
   const { datas, totalDatas } = useGetDatasTable(tableContext.query, () => opinions(tableContext.query));
@@ -66,12 +65,12 @@ export const OpinionListResults = ({ tableContext, action = '' }) => {
                   <TableCell align='center'>
                     <IconButton
                       color="info"
-                      onClick={() => Router.push(`opinions/detail/${data.id}`)}
+                      onClick={() => Router.push(`/opinions/detail/${data.id}${action === 'finish' ? '?action=finish' : ''}`)}
                       title="detail"
                     >
                       <Visibility />
                     </IconButton>
-                    {action !== 'finish' && <IconButton
+                    {action !== 'finish' && data.request_status.name === 'Open' && <IconButton
                       color="error"
                       onClick={() => { deleteHandler(data.id); tableContext.pageHandler(1); }}
                       title="detail"
@@ -79,7 +78,7 @@ export const OpinionListResults = ({ tableContext, action = '' }) => {
                       <Delete />
                     </IconButton>}
                     {action === 'finish' && data.request_status.name === 'Open' && <IconButton
-                      color="warning"
+                      color="success"
                       onClick={() => { finishHandler(data.id); tableContext.pageHandler(1); }}
                       title="detail"
                     >

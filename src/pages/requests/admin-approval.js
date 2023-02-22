@@ -24,9 +24,9 @@ const Page = () => {
         }}
       >
         <Container maxWidth={false}>
-          <RequestListToolbar tableContext={tableContext} />
+          <RequestListToolbar tableContext={tableContext} action='admin-approval' />
           <Box sx={{ mt: 3 }}>
-            <RequestListResults tableContext={tableContext} />
+            <RequestListResults tableContext={tableContext} action='admin-approval' />
           </Box>
         </Container>
       </Box>
@@ -36,7 +36,7 @@ const Page = () => {
 
 Page.getLayout = (page) => (
   <DashboardLayout>
-    <RoleGuard page='request' access='read'>
+    <RoleGuard page='request' access='finish'>
       {page}
     </RoleGuard>
   </DashboardLayout >
