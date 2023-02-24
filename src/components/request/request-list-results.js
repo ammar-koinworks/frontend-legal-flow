@@ -108,7 +108,7 @@ export const RequestListResults = ({ tableContext, action = '' }) => {
                     >
                       <Visibility />
                     </IconButton>
-                    {action === '' && <IconButton
+                    {action === '' && data.request_status_id <= 3 && <IconButton
                       color="error"
                       onClick={() => { deleteHandler(data.id); tableContext.pageHandler(1); }}
                       title="detail"

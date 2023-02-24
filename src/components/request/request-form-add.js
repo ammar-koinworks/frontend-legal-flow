@@ -58,9 +58,6 @@ export const RequestFormAdd = (props) => {
       agreement_category_id: Yup
         .number().typeError('Category is Required')
         .required('Category is required'),
-      related_pic_id: Yup
-        .number().typeError('PIC is Required')
-        .required('PIC is required'),
       company_id: Yup
         .number().typeError('Company is Required')
         .required('Company is required'),
