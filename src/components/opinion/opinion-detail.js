@@ -13,23 +13,17 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Router, { useRouter } from 'next/router';
 
-import SelectAsync from '../select-async';
-
-import { getDatas } from '../../api/masterData';
 import { useAlertContext } from '../../contexts/alert';
-import { document, documentUpdate } from '../../api/document';
+import { opinion, opinionUpdate } from '../../api/opinion';
 import { useState } from 'react';
 import { useGetDetail } from '../../hooks/detail';
-import { EditButton } from './edit-button';
-import { DeleteButton } from './delete-button';
+import { OpinionDetailButton } from './opinion-detail-button';
 import { useAuthContext } from '../../contexts/auth-context';
-import FinishButton from './finish-button';
 
-export const DocumentDetail = (props) => {
+export const OpinionDetail = (props) => {
   const { roleAccess } = useAuthContext();
   const { query: { id, action } } = useRouter();
-  const [finish, setFinish] = useState(0);
-  const { detail } = useGetDetail(() => document(id), [finish]);
+  const { detail } = useGetDetail(() => opinion(id));
   const alertContext = useAlertContext();
   const [isEdit, setIsEdit] = useState(false);
 
@@ -37,31 +31,31 @@ export const DocumentDetail = (props) => {
     enableReinitialize: true,
     initialValues: {
       requester_name: detail.requester_name || '',
-      document_title: detail.document_title || '',
-      description: detail.Description || '',
-      company_id: detail.company_id || null,
-      document_link: detail.document_link || '',
+      opinion_title: detail.opinion_title || '',
+      issue: detail.issue || '',
+      usecase: detail.usecase || null,
     },
     validationSchema: Yup.object({
       requester_name: Yup
         .string()
         .max(255)
         .required('Requester name is required'),
-      document_title: Yup
+      opinion_title: Yup
         .string()
         .max(255)
-        .required('Document title is required'),
-      description: Yup
+        .required('Opinion title is required'),
+      issue: Yup
         .string()
         .max(255)
-        .required('description is required'),
-      company_id: Yup
-        .number().typeError('Company is Required')
-        .required('Company is required'),
+        .required('Issue is required'),
+      usecase: Yup
+        .string()
+        .max(255)
+        .required('Usecase is required'),
     }),
     onSubmit: async (data) => {
       try {
-        const res = await documentUpdate(id, data);
+        const res = await opinionUpdate(id, data);
 
         if (res.success) {
           alertContext.setAlert("success", res.message);
@@ -101,7 +95,7 @@ export const DocumentDetail = (props) => {
               xs={12}
             >
               <TextField
-                disabled={true}
+                disabled="true"
                 error={Boolean(formik.touched.requester_name && formik.errors.requester_name)}
                 fullWidth
                 helperText={formik.touched.requester_name && formik.errors.requester_name}
@@ -126,39 +120,15 @@ export const DocumentDetail = (props) => {
             >
               <TextField
                 disabled={!isEdit}
-                error={Boolean(formik.touched.document_title && formik.errors.document_title)}
+                error={Boolean(formik.touched.usecase && formik.errors.usecase)}
                 fullWidth
-                helperText={formik.touched.document_title && formik.errors.document_title}
-                label="Document Title"
+                helperText={formik.touched.usecase && formik.errors.usecase}
+                label="Usecase"
                 margin="normal"
-                name="document_title"
+                name="usecase"
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
-                value={formik.values.document_title}
-                variant="outlined"
-                sx={{
-                  "& .MuiInputBase-input.Mui-disabled": {
-                    WebkitTextFillColor: "black",
-                  },
-                }}
-              />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                disabled={!isEdit}
-                error={Boolean(formik.touched.description && formik.errors.description)}
-                fullWidth
-                helperText={formik.touched.description && formik.errors.description}
-                label="Description"
-                margin="normal"
-                name="description"
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-                value={formik.values.description}
+                value={formik.values.usecase}
                 variant="outlined"
                 multiline
                 maxRows={5}
@@ -174,17 +144,23 @@ export const DocumentDetail = (props) => {
               md={6}
               xs={12}
             >
-              <SelectAsync
-                name='Company'
-                formik={formik}
-                data={(search) => getDatas('company', { search })}
+              <TextField
                 disabled={!isEdit}
+                error={Boolean(formik.touched.opinion_title && formik.errors.opinion_title)}
+                fullWidth
+                helperText={formik.touched.opinion_title && formik.errors.opinion_title}
+                label="Opinion Title"
+                margin="normal"
+                name="opinion_title"
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                value={formik.values.opinion_title}
+                variant="outlined"
                 sx={{
                   "& .MuiInputBase-input.Mui-disabled": {
                     WebkitTextFillColor: "black",
                   },
                 }}
-                defaultValue={detail.company}
               />
             </Grid>
             <Grid
@@ -193,16 +169,16 @@ export const DocumentDetail = (props) => {
               xs={12}
             >
               <TextField
-                disabled={true}
-                error={Boolean(formik.touched.document_link && formik.errors.document_link)}
+                disabled={!isEdit}
+                error={Boolean(formik.touched.issue && formik.errors.issue)}
                 fullWidth
-                helperText={formik.touched.document_link && formik.errors.document_link}
-                label="Document Link"
+                helperText={formik.touched.issue && formik.errors.issue}
+                label="Issue"
                 margin="normal"
-                name="document_link"
+                name="issue"
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
-                value={formik.values.document_link}
+                value={formik.values.issue}
                 variant="outlined"
                 sx={{
                   "& .MuiInputBase-input.Mui-disabled": {
@@ -249,9 +225,7 @@ export const DocumentDetail = (props) => {
             </Button>
           </Grid>
           <Grid item xs={6} textAlign='right'>
-            {action !== 'finish' && roleAccess?.document?.update && detail.request_status.name === 'Open' && <EditButton edit={{ isEdit, setIsEdit }} formik={formik} />}
-            {action === 'finish' && roleAccess?.document?.finish && detail.document_link === null && <FinishButton id={id} setFinish={setFinish} />}
-            {action !== 'finish' && roleAccess?.document?.delete && detail.request_status.name === 'Open' && <DeleteButton />}
+            {detail?.request_status?.name !== "Approved" && <OpinionDetailButton edit={{ isEdit, setIsEdit }} formik={formik} /> }
           </Grid>
         </Grid>
       </Card>

@@ -4,8 +4,8 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { debounce } from '@mui/material/utils';
 import { userSelectMapping } from '../utils/userSelectMapping';
 
-export default function SelectAsync({ name, formik, data, defaultValue = { id: null, name: null }, disabled = false, sx = {}, formName = null, user = false }) {
-  const [value, setValue] = React.useState(null);
+export default function SelectAsyncMultiple({ name, formik, data, defaultValue = [], disabled = false, sx = {}, formName = null, user = false }) {
+  const [value, setValue] = React.useState([]);
   const [inputValue, setInputValue] = React.useState('');
   const [options, setOptions] = React.useState([]);
 
@@ -24,32 +24,17 @@ export default function SelectAsync({ name, formik, data, defaultValue = { id: n
     , []
   );
 
-  // React.useEffect(() => {
-  //   fetch("");
-  // }, []);
-
   React.useEffect(() => {
-    if (inputValue !== '' && inputValue !== defaultValue.name) {
+    if (inputValue !== '') {
       fetch(inputValue);
     }
   }, [inputValue]);
 
   React.useEffect(() => {
-    if (defaultValue.id) {
-      if (user) {
-        const data = {
-          id: defaultValue.id,
-          name: defaultValue.fullname
-        }
-        setOptions([data]);
-        setValue(data);
-      } else {
-        setOptions([defaultValue]);
-        setValue(defaultValue);
-      }
-    }
-  }, [defaultValue.id]);
-
+    setValue(defaultValue);
+    const newValueIds = defaultValue ? defaultValue.map((v) => (v.id)) : [];
+    formik.setFieldValue(exactName, newValueIds);
+  }, []);
 
   const exactName = `${formName ? formName : name.toLowerCase() + '_id'}`;
 
@@ -65,11 +50,12 @@ export default function SelectAsync({ name, formik, data, defaultValue = { id: n
       autoComplete
       includeInputInList
       filterSelectedOptions
+      multiple
       value={value}
       onChange={(event, newValue) => {
         setValue(newValue);
-        setInputValue('');
-        formik.setFieldValue(exactName, newValue ? newValue.id : null);
+        const newValueIds = newValue ? newValue.map((v) => (v.id)) : [];
+        formik.setFieldValue(exactName, newValueIds);
       }}
       onInputChange={(event, newInputValue) => {
         setInputValue(newInputValue);
@@ -87,5 +73,6 @@ export default function SelectAsync({ name, formik, data, defaultValue = { id: n
         />
       )}
     />
+
   );
 }

@@ -3,6 +3,7 @@ import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import { Box, Divider, Drawer, Typography, useMediaQuery } from '@mui/material';
+// import AssuredWorkloadIcon from '@mui/icons-material/AssuredWorkload';
 import MenuList from './menu-list';
 
 export const DashboardSidebar = (props) => {

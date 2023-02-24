@@ -1,19 +1,20 @@
 import Head from 'next/head';
 import { Box, Container } from '@mui/material';
+import { OpinionListResults } from '../../components/opinion/opinion-list-results';
+import { OpinionListToolbar } from '../../components/opinion/opinion-list-toolbar';
 import { DashboardLayout } from '../../components/dashboard-layout';
 import { useTableContext } from '../../contexts/table-context';
 import { RoleGuard } from '../../components/role-guard';
-import { RequestListToolbar } from '../../components/request/request-list-toolbar';
-import { RequestListResults } from '../../components/request/request-list-results';
 
 const Page = () => {
   const tableContext = useTableContext();
+  tableContext.query.is_admin_approval = true;
 
   return (
     <>
       <Head>
         <title>
-          Agreements | Legal Web
+          Opinions | Legal Web
         </title>
       </Head>
       <Box
@@ -24,9 +25,9 @@ const Page = () => {
         }}
       >
         <Container maxWidth={false}>
-          <RequestListToolbar tableContext={tableContext} />
+          <OpinionListToolbar tableContext={tableContext} action='finish' />
           <Box sx={{ mt: 3 }}>
-            <RequestListResults tableContext={tableContext} />
+            <OpinionListResults tableContext={tableContext} action='finish' />
           </Box>
         </Container>
       </Box>
@@ -36,7 +37,7 @@ const Page = () => {
 
 Page.getLayout = (page) => (
   <DashboardLayout>
-    <RoleGuard page='request' access='read'>
+    <RoleGuard page='opinion' access='finish'>
       {page}
     </RoleGuard>
   </DashboardLayout >

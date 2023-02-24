@@ -12,15 +12,8 @@ import { debounce } from '@mui/material/utils';
 import Router from 'next/router';
 import { useAuthContext } from '../../contexts/auth-context';
 
-export const RequestListToolbar = ({ tableContext, action = '' }) => {
+export const OpinionListToolbar = ({ tableContext, action = '' }) => {
   const { roleAccess } = useAuthContext();
-  let title;
-  if (action === 'admin-approval') title = 'Admin Approval';
-  if (action === 'manager-approval') title = 'Manager Approval';
-  if (action === 'clo-approval') title = 'CLO Approval';
-  if (action === 'dl-approval') title = 'Direct-Line Approval';
-  if (action === 'pic-approval') title = 'PIC Approval';
-
 
   return (
     <Box>
@@ -37,15 +30,15 @@ export const RequestListToolbar = ({ tableContext, action = '' }) => {
           sx={{ m: 1 }}
           variant="h4"
         >
-          Agreements {title}
+          Opinions {action === 'finish' && 'Approval'}
         </Typography>
-        {roleAccess?.request?.create && action === '' &&
+        {roleAccess?.opinion?.create && action !== 'finish' &&
           <Box sx={{ m: 1 }}>
             <Button
               color="primary"
               variant="contained"
               onClick={() => Router
-                .push('/requests/add')
+                .push('/opinions/add')
                 .catch(console.error)}
             >
               Add Request
@@ -71,7 +64,7 @@ export const RequestListToolbar = ({ tableContext, action = '' }) => {
                     </InputAdornment>
                   )
                 }}
-                placeholder="Search request"
+                placeholder="Search document"
                 variant="outlined"
                 onChange={debounce(e => tableContext.searchHandler(e.target.value), 500)}
               />

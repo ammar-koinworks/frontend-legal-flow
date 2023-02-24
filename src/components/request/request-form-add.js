@@ -13,8 +13,9 @@ import * as Yup from 'yup';
 import Router from 'next/router';
 
 import SelectAsync from '../select-async';
+import SelectAsyncMultiple from '../select-async-multiple';
 
-import { getDatas } from '../../api/masterData';
+import { getDatas, getDatasUser } from '../../api/masterData';
 import { useAlertContext } from '../../contexts/alert';
 import { useAuthContext } from '../../contexts/auth-context';
 import { useFile } from '../../hooks/file';
@@ -57,9 +58,6 @@ export const RequestFormAdd = (props) => {
       agreement_category_id: Yup
         .number().typeError('Category is Required')
         .required('Category is required'),
-      related_pic_id: Yup
-        .number().typeError('PIC is Required')
-        .required('PIC is required'),
       company_id: Yup
         .number().typeError('Company is Required')
         .required('Company is required'),
@@ -100,24 +98,6 @@ export const RequestFormAdd = (props) => {
             container
             spacing={3}
           >
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                error={Boolean(formik.touched.requester_name && formik.errors.requester_name)}
-                fullWidth
-                helperText={formik.touched.requester_name && formik.errors.requester_name}
-                label="Requesters Name"
-                margin="normal"
-                name="requester_name"
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-                value={formik.values.requester_name}
-                variant="outlined"
-              />
-            </Grid>
             <Grid
               item
               md={6}
@@ -188,7 +168,7 @@ export const RequestFormAdd = (props) => {
               md={6}
               xs={12}
             >
-              <SelectAsync name='PIC' formName={'related_pic_id'} formik={formik} data={(search) => getDatas('user', { search, department_id: user?.department_id })} user={true} />
+              <SelectAsyncMultiple name='PIC' formName={'related_pic_id'} formik={formik} data={(search) => getDatasUser('related-pic', { search })} user={true} />
             </Grid>
             <Grid
               item

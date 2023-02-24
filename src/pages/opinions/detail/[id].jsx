@@ -1,14 +1,14 @@
 import Head from 'next/head';
 import { Box, Container, Typography } from '@mui/material';
 import { DashboardLayout } from '../../../components/dashboard-layout';
+import { OpinionDetail } from '../../../components/opinion/opinion-detail';
 import { RoleGuard } from '../../../components/role-guard';
-import { RequestDetail } from '../../../components/request/request-detail';
 
 const Page = () => (
   <>
     <Head>
       <title>
-        Agreements | Legal Web
+        Opinions | Legal Web
       </title>
     </Head>
     <Box
@@ -23,9 +23,9 @@ const Page = () => (
           sx={{ mb: 3 }}
           variant="h4"
         >
-          Agreement Detail
+          Opinion Form
         </Typography>
-        <RequestDetail />
+        <OpinionDetail />
       </Container>
     </Box>
   </>
@@ -33,7 +33,7 @@ const Page = () => (
 
 Page.getLayout = (page) => (
   <DashboardLayout>
-    <RoleGuard page='request' access='read'>
+    <RoleGuard page='opinion' access='read'>
       {page}
     </RoleGuard>
   </DashboardLayout>
