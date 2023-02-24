@@ -27,7 +27,7 @@ export default function FileDropzone({ file, isEdit = true }) {
               : <Box>
                 <input {...file.getInputProps()} />
                 <Typography color={'black'} textAlign='center'>
-                  Drag 'n' drop some files here, or click to select files
+                  Drag n drop some files here, or click to select files
                 </Typography>
               </Box>
             }
