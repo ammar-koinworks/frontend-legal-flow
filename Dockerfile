@@ -12,5 +12,5 @@ RUN yarn run build
 
 FROM nginx as production-stage
 RUN mkdir /app
-COPY --from=build-stage /app/public /app
+COPY --from=build-stage .next /app
 COPY nginx/nginx.conf /etc/nginx/nginx.conf
